@@ -2,7 +2,7 @@ import streamlit as st
 import json
 from pathlib import Path
 import anthropic
-import openai
+from openai import OpenAI
 from typing import Dict, Any, Optional
 
 # Page configuration
@@ -26,8 +26,7 @@ def get_anthropic_client():
 def get_openai_client():
     """Initialize OpenAI client with API key from secrets"""
     try:
-        openai.api_key = st.secrets["OPENAI_API_KEY"]
-        return openai
+        return OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
     except Exception as e:
         st.error(f"Failed to initialize OpenAI client: {e}")
         return None
@@ -91,11 +90,11 @@ def translate_with_gpt(prompt: str, temperature: float = 0.3) -> Optional[str]:
 
     try:
         with st.spinner("Translating with GPT-5.1..."):
-            response = client.ChatCompletion.create(
-                model="gpt-5.1",  # Update to actual model name when available
+            response = client.chat.completions.create(
+                model="gpt-5.1-2025-11-13",
                 messages=[
                     {
-                        "role": "system",
+                        "role": "user",
                         "content": prompt
                     }
                 ],
