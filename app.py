@@ -174,8 +174,8 @@ def main():
         json_input = st.text_area(
             "Input JSON",
             value="""{
-  "hero_headline": "No-Bullshit-Casino",
-  "hero_subheadline": "Only cash wins",
+  "hero_headline": "ZERO BS CASINO",
+  "hero_subheadline": "CASH REWARDS ONLY",
   "hero_bullet_no_wagering": "No wagering requirements",
   "hero_bullet_fast_payouts": "Super fast payouts",
   "hero_bullet_no_limits": "No limits on wins & withdrawals",
