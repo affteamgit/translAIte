@@ -157,18 +157,6 @@ def main():
             help="Full language name (e.g., German, Spanish, Italian)"
         )
 
-        region_variant = st.text_input(
-            "Region Variant",
-            value="Germany (DE)",
-            help="Regional variant (e.g., Germany (DE), Spain (ES))"
-        )
-
-        context_path = st.text_input(
-            "Context Path",
-            value="components/hero",
-            help="Where in the app this text appears (e.g., components/hero, pages/legal/terms)"
-        )
-
         # Glossary (optional)
         st.subheader("Glossary (Optional)")
         glossary_input = st.text_area(
@@ -220,8 +208,8 @@ def main():
             formatted_prompt = format_prompt(
                 template=prompt_template,
                 target_language=target_language,
-                region_variant=region_variant,
-                context_path=context_path,
+                region_variant=target_language,  # Use target language as region
+                context_path="translation",  # Generic context
                 glossary=glossary_parsed,
                 json_input=json_input
             )
