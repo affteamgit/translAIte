@@ -169,20 +169,6 @@ def main():
             help="Full language name (e.g., German, Spanish, Italian)"
         )
 
-        # Glossary (optional)
-        st.subheader("Glossary (Optional)")
-        glossary_input = st.text_area(
-            "Glossary JSON",
-            value='{"Welcome Bonus": "Willkommensbonus"}',
-            height=100,
-            help="Required translations as JSON object. Leave as {} if none."
-        )
-
-        # Validate glossary
-        glossary_valid, glossary_parsed, glossary_error = validate_json(glossary_input)
-        if not glossary_valid:
-            st.error(glossary_error)
-
         # JSON input to translate
         st.subheader("JSON to Translate")
         json_input = st.text_area(
@@ -208,7 +194,7 @@ def main():
         translate_button = st.button(
             "🚀 Translate",
             type="primary",
-            disabled=not (json_valid and glossary_valid),
+            disabled=not json_valid,
             use_container_width=True
         )
 
@@ -222,7 +208,7 @@ def main():
                 target_language=target_language,
                 region_variant=target_language,  # Use target language as region
                 context_path="translation",  # Generic context
-                glossary=glossary_parsed,
+                glossary={},  # Empty glossary
                 json_input=json_input
             )
 
@@ -301,9 +287,8 @@ def main():
         1. Select your translation model
         2. (Optional) Edit the prompt template
         3. Configure target language
-        4. Add glossary terms (optional)
-        5. Paste your JSON input
-        6. Click **Translate**
+        4. Paste your JSON input
+        5. Click **Translate**
 
         ### Tips:
         - Edit the prompt to test different approaches
