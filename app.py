@@ -99,7 +99,7 @@ def translate_with_gpt(prompt: str, temperature: float = 0.3) -> Optional[str]:
                     }
                 ],
                 temperature=temperature,
-                max_tokens=4000,
+                max_completion_tokens=4000,
                 top_p=0.9
             )
             return response.choices[0].message.content
