@@ -309,14 +309,5 @@ def main():
         - Always validate JSON output before use
         """)
 
-        st.header("📊 Model Info")
-        st.markdown(f"""
-        **Selected Model:** {model_choice}
-
-        **Temperature:** {temperature}
-
-        **Max Tokens:** 4000
-        """)
-
 if __name__ == "__main__":
     main()
