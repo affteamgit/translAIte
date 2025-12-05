@@ -120,10 +120,10 @@ def main():
     st.title("🌐 Translation Prompt Tester")
     st.markdown("Test translation prompts with Claude Opus and GPT-5.1")
 
-    # Load prompt template
-    prompt_template = load_prompt_template()
-    if not prompt_template:
-        st.stop()
+    # Load default prompt template
+    default_prompt = load_prompt_template()
+    if not default_prompt:
+        default_prompt = ""
 
     # Create two columns for input and output
     col1, col2 = st.columns([1, 1])
@@ -147,6 +147,18 @@ def main():
             step=0.1,
             help="Lower values = more consistent, Higher values = more creative"
         )
+
+        # Prompt editor
+        st.subheader("Translation Prompt")
+        with st.expander("✏️ Edit Prompt Template", expanded=False):
+            st.markdown("**Variables:** `${targetLanguage}`, `${regionVariant}`, `${contextPath}`, `${glossary}`, `${jsonInput}`")
+            prompt_template = st.text_area(
+                "Prompt Template",
+                value=default_prompt,
+                height=400,
+                help="Edit the prompt template. Use variables like ${targetLanguage}, ${jsonInput}, etc.",
+                label_visibility="collapsed"
+            )
 
         # Target language configuration
         st.subheader("Language Settings")
@@ -287,12 +299,14 @@ def main():
 
         ### How to use:
         1. Select your translation model
-        2. Configure language settings
-        3. Add glossary terms (optional)
-        4. Paste your JSON input
-        5. Click **Translate**
+        2. (Optional) Edit the prompt template
+        3. Configure target language
+        4. Add glossary terms (optional)
+        5. Paste your JSON input
+        6. Click **Translate**
 
         ### Tips:
+        - Edit the prompt to test different approaches
         - Lower temperature (0.2-0.4) for consistent translations
         - Higher temperature (0.5-0.8) for creative marketing copy
         - Always validate JSON output before use
