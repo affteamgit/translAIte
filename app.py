@@ -1,5 +1,6 @@
 import streamlit as st
 import json
+import re
 from pathlib import Path
 import anthropic
 from openai import OpenAI
@@ -245,10 +246,11 @@ def main():
                     cashy_preserved = "Cashy" in result_str or "cashy" not in result_str.lower()
                     checks.append(("Brand name 'Cashy' preserved", cashy_preserved))
 
-                    # Check 3: Check for placeholders
-                    input_str = json.dumps(json_parsed)
-                    input_placeholders = set([p for p in input_str.split('{') if '}' in p])
-                    output_placeholders = set([p for p in result_str.split('{') if '}' in p])
+                    # Check 3: Check for placeholders (extract only {variable} patterns from values)
+                    input_values = ' '.join(str(v) for v in json_parsed.values())
+                    output_values = ' '.join(str(v) for v in result_parsed.values())
+                    input_placeholders = set(re.findall(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}', input_values))
+                    output_placeholders = set(re.findall(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}', output_values))
                     placeholders_preserved = input_placeholders == output_placeholders or len(input_placeholders) == 0
                     checks.append(("Placeholders preserved", placeholders_preserved))
 
