@@ -1,0 +1,322 @@
+import streamlit as st
+import json
+from pathlib import Path
+import anthropic
+import openai
+from typing import Dict, Any, Optional
+
+# Page configuration
+st.set_page_config(
+    page_title="Translation Prompt Tester",
+    page_icon="🌐",
+    layout="wide"
+)
+
+# Initialize API clients
+@st.cache_resource
+def get_anthropic_client():
+    """Initialize Anthropic client with API key from secrets"""
+    try:
+        return anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
+    except Exception as e:
+        st.error(f"Failed to initialize Anthropic client: {e}")
+        return None
+
+@st.cache_resource
+def get_openai_client():
+    """Initialize OpenAI client with API key from secrets"""
+    try:
+        openai.api_key = st.secrets["OPENAI_API_KEY"]
+        return openai
+    except Exception as e:
+        st.error(f"Failed to initialize OpenAI client: {e}")
+        return None
+
+def load_prompt_template() -> str:
+    """Load the optimized GPT-5.1 prompt template"""
+    prompt_path = Path(__file__).parent / "prompt_gpt5_optimized.txt"
+    try:
+        with open(prompt_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        st.error(f"Prompt template not found at {prompt_path}")
+        return ""
+
+def format_prompt(
+    template: str,
+    target_language: str,
+    region_variant: str,
+    context_path: str,
+    glossary: Dict[str, str],
+    json_input: str
+) -> str:
+    """Format the prompt template with user inputs"""
+    glossary_str = json.dumps(glossary) if glossary else "{}"
+
+    return template.replace("${targetLanguage}", target_language) \
+                   .replace("${regionVariant}", region_variant) \
+                   .replace("${contextPath}", context_path) \
+                   .replace("${glossary}", glossary_str) \
+                   .replace("${jsonInput}", json_input)
+
+def translate_with_opus(prompt: str, temperature: float = 0.3) -> Optional[str]:
+    """Call Claude Opus with the formatted prompt"""
+    client = get_anthropic_client()
+    if not client:
+        return None
+
+    try:
+        with st.spinner("Translating with Claude Opus..."):
+            message = client.messages.create(
+                model="claude-opus-4-5-20251101",
+                max_tokens=4000,
+                temperature=temperature,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            )
+            return message.content[0].text
+    except Exception as e:
+        st.error(f"Opus translation failed: {e}")
+        return None
+
+def translate_with_gpt(prompt: str, temperature: float = 0.3) -> Optional[str]:
+    """Call GPT-5.1 with the formatted prompt"""
+    client = get_openai_client()
+    if not client:
+        return None
+
+    try:
+        with st.spinner("Translating with GPT-5.1..."):
+            response = client.ChatCompletion.create(
+                model="gpt-5.1",  # Update to actual model name when available
+                messages=[
+                    {
+                        "role": "system",
+                        "content": prompt
+                    }
+                ],
+                temperature=temperature,
+                max_tokens=4000,
+                top_p=0.9
+            )
+            return response.choices[0].message.content
+    except Exception as e:
+        st.error(f"GPT-5.1 translation failed: {e}")
+        return None
+
+def validate_json(json_str: str) -> tuple[bool, Optional[Dict], str]:
+    """Validate JSON string and return parsed object"""
+    try:
+        parsed = json.loads(json_str)
+        return True, parsed, ""
+    except json.JSONDecodeError as e:
+        return False, None, f"Invalid JSON: {e}"
+
+def main():
+    st.title("🌐 Translation Prompt Tester")
+    st.markdown("Test translation prompts with Claude Opus and GPT-5.1")
+
+    # Load prompt template
+    prompt_template = load_prompt_template()
+    if not prompt_template:
+        st.stop()
+
+    # Create two columns for input and output
+    col1, col2 = st.columns([1, 1])
+
+    with col1:
+        st.header("Input Configuration")
+
+        # Model selection
+        model_choice = st.selectbox(
+            "Select Translation Model",
+            ["Claude Opus 4.5", "GPT-5.1"],
+            help="Choose which AI model to use for translation"
+        )
+
+        # Temperature slider
+        temperature = st.slider(
+            "Temperature",
+            min_value=0.0,
+            max_value=1.0,
+            value=0.3,
+            step=0.1,
+            help="Lower values = more consistent, Higher values = more creative"
+        )
+
+        # Target language configuration
+        st.subheader("Language Settings")
+
+        target_language = st.text_input(
+            "Target Language",
+            value="German",
+            help="Full language name (e.g., German, Spanish, Italian)"
+        )
+
+        region_variant = st.text_input(
+            "Region Variant",
+            value="Germany (DE)",
+            help="Regional variant (e.g., Germany (DE), Spain (ES))"
+        )
+
+        context_path = st.text_input(
+            "Context Path",
+            value="components/hero",
+            help="Where in the app this text appears (e.g., components/hero, pages/legal/terms)"
+        )
+
+        # Glossary (optional)
+        st.subheader("Glossary (Optional)")
+        glossary_input = st.text_area(
+            "Glossary JSON",
+            value='{"Welcome Bonus": "Willkommensbonus"}',
+            height=100,
+            help="Required translations as JSON object. Leave as {} if none."
+        )
+
+        # Validate glossary
+        glossary_valid, glossary_parsed, glossary_error = validate_json(glossary_input)
+        if not glossary_valid:
+            st.error(glossary_error)
+
+        # JSON input to translate
+        st.subheader("JSON to Translate")
+        json_input = st.text_area(
+            "Input JSON",
+            value="""{
+  "hero_headline": "No-Bullshit-Casino",
+  "hero_subheadline": "Only cash wins",
+  "hero_bullet_no_wagering": "No wagering requirements",
+  "hero_bullet_fast_payouts": "Super fast payouts",
+  "hero_bullet_no_limits": "No limits on wins & withdrawals",
+  "hero_cta_signup": "Sign up"
+}""",
+            height=300,
+            help="The JSON object to translate"
+        )
+
+        # Validate input JSON
+        json_valid, json_parsed, json_error = validate_json(json_input)
+        if not json_valid:
+            st.error(json_error)
+
+        # Translate button
+        translate_button = st.button(
+            "🚀 Translate",
+            type="primary",
+            disabled=not (json_valid and glossary_valid),
+            use_container_width=True
+        )
+
+    with col2:
+        st.header("Translation Result")
+
+        if translate_button:
+            # Format the prompt
+            formatted_prompt = format_prompt(
+                template=prompt_template,
+                target_language=target_language,
+                region_variant=region_variant,
+                context_path=context_path,
+                glossary=glossary_parsed,
+                json_input=json_input
+            )
+
+            # Call appropriate model
+            if model_choice == "Claude Opus 4.5":
+                result = translate_with_opus(formatted_prompt, temperature)
+            else:
+                result = translate_with_gpt(formatted_prompt, temperature)
+
+            if result:
+                st.subheader("✅ Translation Output")
+
+                # Try to parse and pretty-print the result
+                result_valid, result_parsed, result_error = validate_json(result)
+
+                if result_valid:
+                    # Show formatted JSON
+                    st.code(json.dumps(result_parsed, indent=2, ensure_ascii=False), language="json")
+
+                    # Validation checks
+                    st.subheader("🔍 Validation Checks")
+
+                    checks = []
+
+                    # Check 1: Same number of keys
+                    input_keys = set(json_parsed.keys())
+                    output_keys = set(result_parsed.keys())
+                    keys_match = input_keys == output_keys
+                    checks.append(("Same keys", keys_match))
+
+                    # Check 2: Check if Cashy is preserved
+                    result_str = json.dumps(result_parsed)
+                    cashy_preserved = "Cashy" in result_str or "cashy" not in result_str.lower()
+                    checks.append(("Brand name 'Cashy' preserved", cashy_preserved))
+
+                    # Check 3: Check for placeholders
+                    input_str = json.dumps(json_parsed)
+                    input_placeholders = set([p for p in input_str.split('{') if '}' in p])
+                    output_placeholders = set([p for p in result_str.split('{') if '}' in p])
+                    placeholders_preserved = input_placeholders == output_placeholders or len(input_placeholders) == 0
+                    checks.append(("Placeholders preserved", placeholders_preserved))
+
+                    # Display checks
+                    for check_name, passed in checks:
+                        if passed:
+                            st.success(f"✅ {check_name}")
+                        else:
+                            st.error(f"❌ {check_name}")
+
+                    # Download button
+                    st.download_button(
+                        label="📥 Download Translation",
+                        data=json.dumps(result_parsed, indent=2, ensure_ascii=False),
+                        file_name=f"translation_{target_language.lower()}.json",
+                        mime="application/json"
+                    )
+
+                else:
+                    st.warning("⚠️ Output is not valid JSON")
+                    st.code(result, language="text")
+                    st.error(result_error)
+
+        else:
+            st.info("👈 Configure settings and click 'Translate' to see results")
+
+    # Sidebar with information
+    with st.sidebar:
+        st.header("ℹ️ About")
+        st.markdown("""
+        This tool allows you to test translation prompts using:
+        - **Claude Opus 4.5**: Anthropic's most capable model
+        - **GPT-5.1**: OpenAI's latest model
+
+        ### How to use:
+        1. Select your translation model
+        2. Configure language settings
+        3. Add glossary terms (optional)
+        4. Paste your JSON input
+        5. Click **Translate**
+
+        ### Tips:
+        - Lower temperature (0.2-0.4) for consistent translations
+        - Higher temperature (0.5-0.8) for creative marketing copy
+        - Always validate JSON output before use
+        """)
+
+        st.header("📊 Model Info")
+        st.markdown(f"""
+        **Selected Model:** {model_choice}
+
+        **Temperature:** {temperature}
+
+        **Max Tokens:** 4000
+        """)
+
+if __name__ == "__main__":
+    main()
