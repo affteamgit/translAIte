@@ -83,6 +83,30 @@ def translate_with_opus(prompt: str, temperature: float = 0.3) -> Optional[str]:
         st.error(f"Opus translation failed: {e}")
         return None
 
+def translate_with_sonnet(prompt: str, temperature: float = 0.3) -> Optional[str]:
+    """Call Claude Sonnet with the formatted prompt"""
+    client = get_anthropic_client()
+    if not client:
+        return None
+
+    try:
+        with st.spinner("Translating with Claude Sonnet..."):
+            message = client.messages.create(
+                model="claude-sonnet-4-5-20241022",
+                max_tokens=4000,
+                temperature=temperature,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            )
+            return message.content[0].text
+    except Exception as e:
+        st.error(f"Sonnet translation failed: {e}")
+        return None
+
 def translate_with_gpt(prompt: str, temperature: float = 0.3) -> Optional[str]:
     """Call GPT-5.1 with the formatted prompt"""
     client = get_openai_client()
@@ -134,7 +158,7 @@ def main():
         # Model selection
         model_choice = st.selectbox(
             "Select Translation Model",
-            ["Claude Opus 4.5", "GPT-5.1"],
+            ["Claude Opus 4.5", "Claude Sonnet 4.5", "GPT-5.1"],
             help="Choose which AI model to use for translation"
         )
 
@@ -215,6 +239,8 @@ def main():
             # Call appropriate model
             if model_choice == "Claude Opus 4.5":
                 result = translate_with_opus(formatted_prompt, temperature)
+            elif model_choice == "Claude Sonnet 4.5":
+                result = translate_with_sonnet(formatted_prompt, temperature)
             else:
                 result = translate_with_gpt(formatted_prompt, temperature)
 
@@ -281,6 +307,7 @@ def main():
         st.markdown("""
         This tool allows you to test translation prompts using:
         - **Claude Opus 4.5**: Anthropic's most capable model
+        - **Claude Sonnet 4.5**: Anthropic's balanced model (faster, cost-effective)
         - **GPT-5.1**: OpenAI's latest model
 
         ### How to use:
