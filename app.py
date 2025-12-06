@@ -92,7 +92,7 @@ def translate_with_sonnet(prompt: str, temperature: float = 0.3) -> Optional[str
     try:
         with st.spinner("Translating with Claude Sonnet..."):
             message = client.messages.create(
-                model="claude-sonnet-4-5-20241022",
+                model="claude-sonnet-4-20250514",
                 max_tokens=4000,
                 temperature=temperature,
                 messages=[
