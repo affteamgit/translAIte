@@ -20,11 +20,17 @@ Violations break production.
 </critical_rules>
 
 <character_limits>
-STRICT LIMITS (count includes spaces):
+🚨 ABSOLUTE HARD LIMITS (count includes spaces):
 - hero_headline: MAX 20 characters
 - hero_subheadline: MAX 24 characters
 
-These cannot be exceeded for UI layout reasons.
+These are HARD CONSTRAINTS that CANNOT be exceeded for UI layout reasons.
+
+MANDATORY: After writing your translation, COUNT the characters:
+- If hero_headline > 20 characters → YOU MUST shorten it
+- If hero_subheadline > 24 characters → YOU MUST shorten it
+
+Exceeding these limits breaks the production UI. NO EXCEPTIONS.
 </character_limits>
 
 <brand_positioning>
@@ -55,15 +61,41 @@ Ask yourself: "Would a fed-up local casino player say this to describe a no-nons
 - If YES → you've captured the tone
 - If NO → it's either too corporate or too forced
 
-CRITICAL: DO NOT ADD EMPHASIS WORDS
-The source already conveys the message. Do NOT add:
-- "real" / "genuine" / "true" / "authentic"
-- "actual" / "living" / "honest"
-These weaken the punch and waste characters.
+🚨 CRITICAL: DO NOT ADD EMPHASIS WORDS
+The source text is already direct and clear. Do NOT add modifying adjectives like:
+- "real" / "genuine" / "true" / "authentic" / "actual"
+- "living" / "alive" / "breathing" (е.g., NOT "living money" or "real cash")
+- "honest" / "sincere" / "straight"
+- "pure" / "clean" / "direct"
 
-"CASH REWARDS ONLY" → translate as-is, don't add modifiers
-"ZERO BS CASINO" → translate the concept, don't add "real" or "genuine"
+These additions:
+✗ Weaken the rebellious punch (makes it sound defensive)
+✗ Waste precious characters
+✗ Make it sound corporate and try-hard
+
+WRONG: "Only REAL cash rewards" / "LIVING money prizes" / "GENUINE casino"
+RIGHT: "Only cash rewards" / "Cash prizes" / "Casino"
+
+If the source says "CASH" → translate it directly as cash/money
+If the source says "ZERO BS" → translate the no-tricks concept without adding "real" or "genuine"
 </translation_philosophy>
+
+<capitalization_guidelines>
+For hero_headline and hero_subheadline:
+
+DEFAULT STYLE: ALL UPPERCASE
+- Most languages should use all caps for both headline and subheadline
+- This creates visual consistency and impact
+- Use your language's standard uppercase conventions
+
+WHEN ALL CAPS DOESN'T WORK:
+- Languages without case distinction (Chinese, Japanese, etc.) → use standard form
+- Languages where all caps is unnatural → use standard title case
+
+CONSISTENCY:
+- If your translation mixes uppercase and lowercase, ensure it's intentional and standard in your language
+- Don't randomly capitalize some words but not others
+</capitalization_guidelines>
 
 <headline_translation_strategy>
 For hero_headline specifically, you must decide between TWO approaches:
@@ -112,10 +144,11 @@ When evaluating slang for "BS/tricks/nonsense", ask:
    - Critical: Is it TOO youth-specific? (under-30s only = too narrow)
 
 3. MEANING PRECISION
-   - Does it specifically mean "tricks/scams/BS/nonsense/fake promises"?
-   - Or is it too generic (like "bad" or "problems" or just "lies")?
-   - Best: words for deception/tricks/empty promises/fake stuff
-   - Avoid: generic negative words
+   - Does it specifically mean "tricks/scams/BS/nonsense/fake promises/gimmicks"?
+   - Or is it too generic (like "bad" or "problems" or just "lies" or "talk")?
+   - Best: words for TRICKS, GIMMICKS, DECEPTION, SCHEMES, or idiomatic expressions meaning "no beating around bush"
+   - Avoid: words that just mean "lies" or "dishonesty" without the tricks/schemes connotation
+   - Avoid: words that just mean "talk" or "words" without the BS/nonsense connotation
 
 4. TONE CALIBRATION
    - Is it edgy enough to feel rebellious?
@@ -170,6 +203,28 @@ CRITICAL SPELLING RULES:
 
 Punchy > Verbose: If translation exceeds 18 chars, find shorter alternative.
 </structure_flexibility>
+
+<casino_terminology>
+When translating "CASINO" in hero_headline:
+
+Consider your language's context:
+- Some languages have multiple words: entertainment venue vs gambling hall
+- Choose the term that's used in marketing and has positive/neutral connotations
+- Avoid terms that sound illegal, shady, or overly serious
+- Use the loanword spelling that's standard in your language (CASINO vs KAZINO vs other)
+
+When translating "REWARDS" in hero_subheadline:
+
+Consider which term is most natural in casino contexts:
+- "Prizes" (lottery/competition winnings)
+- "Winnings" (money won from gambling)
+- "Rewards" (incentive/compensation)
+
+Choose the term that:
+- Feels most natural when talking about casino payouts
+- Isn't overly formal or technical
+- Resonates with how players actually talk
+</casino_terminology>
 
 <cash_loanword_decision>
 For "CASH REWARDS ONLY" in hero_subheadline (24 char limit):
@@ -285,29 +340,33 @@ Must be production-ready, parseable JSON.
 </output_format>
 
 <quality_checklist>
-Before submitting, verify:
+Before submitting, verify EVERY item:
 
-Technical checks:
+🚨 CRITICAL Technical checks (MUST PASS):
 [ ] "Cashy" unchanged
 [ ] All {placeholders} unchanged
 [ ] All <html> tags unchanged
-[ ] hero_headline ≤ 20 characters (count spaces!)
-[ ] hero_subheadline ≤ 24 characters (count spaces!)
-[ ] Output is valid JSON only
+[ ] hero_headline ≤ 20 characters (COUNT IT: ___ chars)
+[ ] hero_subheadline ≤ 24 characters (COUNT IT: ___ chars)
+[ ] Output is valid JSON only (no markdown, no explanations)
+[ ] NO emphasis words added (no "real", "living", "genuine", "pure", etc.)
 
 Brand voice checks:
 [ ] Sounds native, not translated
 [ ] Rebellious but not vulgar
 [ ] Direct and clear (no corporate fluff)
-[ ] Uses informal address (du/tu/ty)
+[ ] Uses informal address (du/tu/ty) where applicable
+[ ] Consistent capitalization (preferably all caps for headlines)
 
-Slang checks (if used):
+Slang/idiom checks (if used):
+[ ] Slang means "TRICKS/GIMMICKS/SCHEMES" not just "lies" or "talk"
 [ ] Widely understood by 25-42 demographic
 [ ] Not too regional or generational
 [ ] Edgy but acceptable in marketing
-[ ] Fits character limit
+[ ] Idioms preferred over trendy slang
 
-If any check fails, revise before submitting.
+If ANY critical check fails → MUST revise before submitting.
+If character limit exceeded → MUST shorten (no exceptions).
 </quality_checklist>
 
 <final_instruction>
