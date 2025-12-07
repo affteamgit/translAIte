@@ -256,11 +256,7 @@ def main():
         # Target language configuration
         st.subheader("Language Settings")
 
-        target_language = st.text_input(
-            "Target Language",
-            value="German",
-            help="Full language name (e.g., German, Spanish, Italian)"
-        )
+        st.info("📋 Will translate to all 7 reference languages: French, Spanish, Italian, German, Slovenian, Serbian, Russian")
 
         # JSON input to translate
         st.subheader("JSON to Translate")
@@ -292,125 +288,144 @@ def main():
         )
 
     with col2:
-        st.header("Translation Result")
+        st.header("Translation Results")
 
         if translate_button:
-            # Format the prompt
-            formatted_prompt = format_prompt(
-                template=prompt_template,
-                target_language=target_language,
-                region_variant=target_language,  # Use target language as region
-                context_path="translation",  # Generic context
-                glossary={},  # Empty glossary
-                json_input=json_input
-            )
+            # Translate all 7 reference languages
+            all_results = {}
 
-            # Call appropriate model
-            if model_choice == "Claude Opus 4.5":
-                result = translate_with_opus(formatted_prompt, temperature)
-            elif model_choice == "Claude Sonnet 4.5":
-                result = translate_with_sonnet(formatted_prompt, temperature)
-            else:
-                result = translate_with_gpt(formatted_prompt, temperature)
-
-            if result:
-                st.subheader("✅ Translation Output")
-
-                # Try to parse and pretty-print the result
-                result_valid, result_parsed, result_error = validate_json(result)
-
-                if result_valid:
-                    # Show formatted JSON
-                    st.code(json.dumps(result_parsed, indent=2, ensure_ascii=False), language="json")
-
-                    # Validation checks
-                    st.subheader("🔍 Validation Checks")
-
-                    checks = []
-
-                    # Check 1: Same number of keys
-                    input_keys = set(json_parsed.keys())
-                    output_keys = set(result_parsed.keys())
-                    keys_match = input_keys == output_keys
-                    checks.append(("Same keys", keys_match))
-
-                    # Check 2: Check if Cashy is preserved
-                    result_str = json.dumps(result_parsed)
-                    cashy_preserved = "Cashy" in result_str or "cashy" not in result_str.lower()
-                    checks.append(("Brand name 'Cashy' preserved", cashy_preserved))
-
-                    # Check 3: Check for placeholders (extract only {variable} patterns from values)
-                    input_values = ' '.join(str(v) for v in json_parsed.values())
-                    output_values = ' '.join(str(v) for v in result_parsed.values())
-                    input_placeholders = set(re.findall(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}', input_values))
-                    output_placeholders = set(re.findall(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}', output_values))
-                    placeholders_preserved = input_placeholders == output_placeholders or len(input_placeholders) == 0
-                    checks.append(("Placeholders preserved", placeholders_preserved))
-
-                    # Display checks
-                    for check_name, passed in checks:
-                        if passed:
-                            st.success(f"✅ {check_name}")
-                        else:
-                            st.error(f"❌ {check_name}")
-
-                    # Reference translation evaluation
-                    eval_results = evaluate_against_reference(result_parsed, target_language)
-
-                    if eval_results["has_reference"]:
-                        st.subheader("📚 Reference Match Evaluation")
-                        st.info(f"Comparing against approved {target_language} translations")
-
-                        for match_info in eval_results["matches"]:
-                            field = match_info["field"]
-                            expected = match_info["expected"]
-                            actual = match_info["actual"]
-                            matches = match_info["matches"]
-                            char_count = match_info["char_count"]
-
-                            # Determine character limit based on field
-                            if field == "hero_headline":
-                                char_limit = 20
-                                within_limit = char_count <= char_limit
-                            elif field == "hero_subheadline":
-                                char_limit = 24
-                                within_limit = char_count <= char_limit
-                            else:
-                                char_limit = None
-                                within_limit = True
-
-                            # Display match status
-                            if matches and within_limit:
-                                st.success(f"✅ **{field}**: Perfect match! ({char_count}/{char_limit} chars)")
-                            elif matches and not within_limit:
-                                st.warning(f"⚠️ **{field}**: Matches reference but exceeds limit ({char_count}/{char_limit} chars)")
-                            else:
-                                # Show comparison
-                                col1, col2 = st.columns(2)
-                                with col1:
-                                    status_icon = "✅" if within_limit else "⚠️"
-                                    st.error(f"❌ **{field}** ({char_count}/{char_limit} chars {status_icon})")
-                                    st.text("Expected:")
-                                    st.code(expected, language="text")
-                                with col2:
-                                    st.text("Got:")
-                                    st.code(actual, language="text")
-
-                    # Download button
-                    st.download_button(
-                        label="📥 Download Translation",
-                        data=json.dumps(result_parsed, indent=2, ensure_ascii=False),
-                        file_name=f"translation_{target_language.lower()}.json",
-                        mime="application/json"
+            with st.spinner("Translating to all 7 languages..."):
+                for language in REFERENCE_TRANSLATIONS.keys():
+                    # Format the prompt
+                    formatted_prompt = format_prompt(
+                        template=prompt_template,
+                        target_language=language,
+                        region_variant=language,
+                        context_path="translation",
+                        glossary={},
+                        json_input=json_input
                     )
 
-                else:
-                    st.warning("⚠️ Output is not valid JSON")
-                    st.code(result, language="text")
-                    st.error(result_error)
+                    # Call appropriate model
+                    if model_choice == "Claude Opus 4.5":
+                        result = translate_with_opus(formatted_prompt, temperature)
+                    elif model_choice == "Claude Sonnet 4.5":
+                        result = translate_with_sonnet(formatted_prompt, temperature)
+                    else:
+                        result = translate_with_gpt(formatted_prompt, temperature)
+
+                    # Store result
+                    if result:
+                        result_valid, result_parsed, result_error = validate_json(result)
+                        all_results[language] = {
+                            "valid": result_valid,
+                            "parsed": result_parsed,
+                            "error": result_error,
+                            "raw": result
+                        }
+                    else:
+                        all_results[language] = {
+                            "valid": False,
+                            "parsed": None,
+                            "error": "Translation failed",
+                            "raw": None
+                        }
+
+            # Display results in tabs
+            tabs = st.tabs(list(REFERENCE_TRANSLATIONS.keys()))
+
+            for idx, language in enumerate(REFERENCE_TRANSLATIONS.keys()):
+                with tabs[idx]:
+                    result_data = all_results.get(language)
+
+                    if not result_data:
+                        st.error("No result for this language")
+                        continue
+
+                    if result_data["valid"]:
+                        result_parsed = result_data["parsed"]
+
+                        # Show formatted JSON
+                        st.code(json.dumps(result_parsed, indent=2, ensure_ascii=False), language="json")
+
+                        # Validation checks
+                        st.subheader("🔍 Validation Checks")
+
+                        checks = []
+
+                        # Check 1: Same keys
+                        input_keys = set(json_parsed.keys())
+                        output_keys = set(result_parsed.keys())
+                        keys_match = input_keys == output_keys
+                        checks.append(("Same keys", keys_match))
+
+                        # Check 2: Cashy preserved
+                        result_str = json.dumps(result_parsed)
+                        cashy_preserved = "Cashy" in result_str or "cashy" not in result_str.lower()
+                        checks.append(("Brand name 'Cashy' preserved", cashy_preserved))
+
+                        # Check 3: Placeholders
+                        input_values = ' '.join(str(v) for v in json_parsed.values())
+                        output_values = ' '.join(str(v) for v in result_parsed.values())
+                        input_placeholders = set(re.findall(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}', input_values))
+                        output_placeholders = set(re.findall(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}', output_values))
+                        placeholders_preserved = input_placeholders == output_placeholders or len(input_placeholders) == 0
+                        checks.append(("Placeholders preserved", placeholders_preserved))
+
+                        # Display checks
+                        for check_name, passed in checks:
+                            if passed:
+                                st.success(f"✅ {check_name}")
+                            else:
+                                st.error(f"❌ {check_name}")
+
+                        # Reference translation evaluation
+                        eval_results = evaluate_against_reference(result_parsed, language)
+
+                        if eval_results["has_reference"]:
+                            st.subheader("📚 Reference Match Evaluation")
+
+                            for match_info in eval_results["matches"]:
+                                field = match_info["field"]
+                                expected = match_info["expected"]
+                                actual = match_info["actual"]
+                                matches = match_info["matches"]
+                                char_count = match_info["char_count"]
+
+                                # Determine character limit
+                                if field == "hero_headline":
+                                    char_limit = 20
+                                elif field == "hero_subheadline":
+                                    char_limit = 24
+                                else:
+                                    char_limit = None
+
+                                within_limit = char_count <= char_limit if char_limit else True
+
+                                # Display match status
+                                if matches and within_limit:
+                                    st.success(f"✅ **{field}**: Perfect match! ({char_count}/{char_limit} chars)")
+                                elif matches and not within_limit:
+                                    st.warning(f"⚠️ **{field}**: Matches but exceeds limit ({char_count}/{char_limit} chars)")
+                                else:
+                                    # Show comparison
+                                    c1, c2 = st.columns(2)
+                                    with c1:
+                                        status_icon = "✅" if within_limit else "⚠️"
+                                        st.error(f"❌ **{field}** ({char_count}/{char_limit} chars {status_icon})")
+                                        st.text("Expected:")
+                                        st.code(expected, language="text")
+                                    with c2:
+                                        st.text("Got:")
+                                        st.code(actual, language="text")
+
+                    else:
+                        st.error(f"⚠️ Invalid JSON output")
+                        st.code(result_data.get("raw", ""), language="text")
+                        st.error(result_data.get("error", "Unknown error"))
 
         else:
-            st.info("👈 Configure settings and click 'Translate' to see results")
+            st.info("👈 Configure settings and click 'Translate' to see results for all 7 languages")
 
     # Sidebar with information
     with st.sidebar:
