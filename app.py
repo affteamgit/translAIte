@@ -35,6 +35,22 @@ REFERENCE_TRANSLATIONS = {
     "Russian": {
         "hero_headline": "КАЗИНО БЕЗ ФОКУСОВ",
         "hero_subheadline": "Только денежные призы"
+    },
+    "Japanese": {
+        "hero_headline": "透明性の高いカジノ",
+        "hero_subheadline": "現金賞品のみ"
+    },
+    "Indonesian": {
+        "hero_headline": "KASINO JUJUR TERBUKA",
+        "hero_subheadline": "HANYA HADIAH TUNAI"
+    },
+    "Simplified Chinese": {
+        "hero_headline": "无废话娱乐场",
+        "hero_subheadline": "纯粹现金奖励"
+    },
+    "Traditional Chinese": {
+        "hero_headline": "無廢話娛樂場",
+        "hero_subheadline": "純粹現金獎勵"
     }
 }
 
@@ -256,7 +272,7 @@ def main():
         # Target language configuration
         st.subheader("Language Settings")
 
-        st.info("📋 Will translate to all 7 reference languages: French, Spanish, Italian, German, Slovenian, Serbian, Russian")
+        st.info("📋 Will translate to all 11 reference languages: French, Spanish, Italian, German, Slovenian, Serbian, Russian, Japanese, Indonesian, Simplified Chinese, Traditional Chinese")
 
         # JSON input to translate
         st.subheader("JSON to Translate")
@@ -291,10 +307,10 @@ def main():
         st.header("Translation Results")
 
         if translate_button:
-            # Translate all 7 reference languages
+            # Translate all 11 reference languages
             all_results = {}
 
-            with st.spinner("Translating to all 7 languages..."):
+            with st.spinner("Translating to all 11 languages..."):
                 for language in REFERENCE_TRANSLATIONS.keys():
                     # Format the prompt
                     formatted_prompt = format_prompt(
@@ -425,7 +441,7 @@ def main():
                         st.error(result_data.get("error", "Unknown error"))
 
         else:
-            st.info("👈 Configure settings and click 'Translate' to see results for all 7 languages")
+            st.info("👈 Configure settings and click 'Translate' to see results for all 11 languages")
 
     # Sidebar with information
     with st.sidebar:
