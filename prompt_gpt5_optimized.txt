@@ -54,6 +54,15 @@ Decision framework:
 Ask yourself: "Would a fed-up local casino player say this to describe a no-nonsense casino?"
 - If YES → you've captured the tone
 - If NO → it's either too corporate or too forced
+
+CRITICAL: DO NOT ADD EMPHASIS WORDS
+The source already conveys the message. Do NOT add:
+- "real" / "genuine" / "true" / "authentic"
+- "actual" / "living" / "honest"
+These weaken the punch and waste characters.
+
+"CASH REWARDS ONLY" → translate as-is, don't add modifiers
+"ZERO BS CASINO" → translate the concept, don't add "real" or "genuine"
 </translation_philosophy>
 
 <headline_translation_strategy>
@@ -90,28 +99,42 @@ Both approaches work. Choose based on which hits harder in ${targetLanguage}.
 <slang_evaluation_framework>
 When evaluating slang for "BS/tricks/nonsense", ask:
 
-1. AUTHENTICITY CHECK
+1. IDIOM vs SLANG PREFERENCE
+   - Is there an established idiomatic expression? (idioms often mean "straight talk" or "no beating around bush")
+   - Prefer established idioms over trendy slang
+   - Idioms: timeless, widely understood
+   - Youth slang: may feel dated or too casual
+
+2. AUTHENTICITY CHECK
    - Do 25-42 year olds actually use this word?
    - Does it appear in casual conversation, not just internet slang?
    - Would someone's older brother/sister (35+) understand it?
+   - Critical: Is it TOO youth-specific? (under-30s only = too narrow)
 
-2. MEANING PRECISION
-   - Does it specifically mean "tricks/scams/BS/nonsense"?
-   - Or is it too generic (like "bad" or "problems")?
-   - Best: specific words for deception/tricks/empty promises
+3. MEANING PRECISION
+   - Does it specifically mean "tricks/scams/BS/nonsense/fake promises"?
+   - Or is it too generic (like "bad" or "problems" or just "lies")?
+   - Best: words for deception/tricks/empty promises/fake stuff
+   - Avoid: generic negative words
 
-3. TONE CALIBRATION
+4. TONE CALIBRATION
    - Is it edgy enough to feel rebellious?
    - But not so vulgar it alienates mainstream casino players?
    - Sweet spot: slightly provocative but acceptable in marketing
 
-4. MARKET COVERAGE
+5. MARKET COVERAGE
    - Does it work across all regions where ${targetLanguage} is spoken?
    - Or is it locked to one country/city?
-   - Prefer: widely understood across target markets
+   - Prefer: nationally understood across target markets
 
-If slang passes all 4 checks → USE IT (it's gold)
-If slang fails any check → fall back to clear direct language
+SELECTION PRIORITY:
+1st choice: Established idiom with perfect meaning
+2nd choice: Widely-known slang that's specific to tricks/BS
+3rd choice: Clear direct translation ("without tricks")
+
+If slang passes all 5 checks → USE IT
+If slang fails check 1 or 2 → probably wrong choice
+If slang fails check 3, 4, or 5 → fall back to clear direct language
 </slang_evaluation_framework>
 
 <structure_flexibility>
@@ -120,34 +143,69 @@ IMPORTANT: Different languages can use different structures for hero_headline.
 Do NOT force the same word order across languages. Choose the structure that:
 - Sounds most natural in ${targetLanguage}
 - Maximizes impact
-- Fits character limit
+- Fits character limit (20 chars max!)
 
-Valid structures:
-- [INTENSITY] [SLANG] [BRAND] → "ZERO [slang] CASINO"
-- [BRAND] [PREPOSITION] [SLANG] → "CASINO WITHOUT [slang]"
-- [BRAND] [SLANG-FREE] → "CASINO [adjective meaning no-BS]"
+PREFERRED STRUCTURE: [BRAND] [PREPOSITION] [SLANG]
+Why: Front-loads the brand, feels more authoritative
+Pattern: Place the casino word first, followed by a preposition meaning "without/zero", then your slang/idiom term
 
-Let ${targetLanguage} grammar and rhythm guide the structure choice.
-The goal is maximum punch, not template consistency.
+ALTERNATIVE: [INTENSITY] [SLANG] [BRAND]
+Use when: Intensity word is short and punchy (like "ZERO" or equivalent)
+Pattern: Start with intensity marker, then slang term, then casino word
+Caution: Only if total stays under 20 chars
+
+AVOID: [BRAND] [VERBOSE PHRASE]
+Long phrases blow the character budget. If your initial translation exceeds 18-20 chars:
+- Find a shorter synonym for the slang term
+- Consider flipping to ALTERNATIVE structure if it's shorter
+- Prioritize punch over verbosity
+
+CRITICAL SPELLING RULES:
+- Slavic languages: Use local spelling conventions for "casino"
+  • Many Slavic languages naturalize this as "KAZINO" (with K)
+  • Cyrillic alphabets: Use Cyrillic spelling
+  • Check: Does your language typically use K-spelling or C-spelling for this loanword?
+- Western European languages: Typically keep "CASINO" with C
+  • Romance and Germanic languages usually maintain C-spelling
+
+Punchy > Verbose: If translation exceeds 18 chars, find shorter alternative.
 </structure_flexibility>
 
 <cash_loanword_decision>
-For "CASH" in hero_subheadline:
+For "CASH REWARDS ONLY" in hero_subheadline (24 char limit):
 
-DEFAULT: Keep "cash" as English loanword
-Reason: Internationally recognized, sounds modern/rebellious
+LOANWORD DECISION FRAMEWORK:
 
-Use local word for money if:
-- "Cash" as loanword sounds unnatural or confusing
-- Local word is shorter and fits character limit better
-- Local word carries stronger "real money" connotation
+Evaluate whether to keep "cash" as an English loanword or translate to local word for money:
 
-Test: Would a local say "cash prizes" or use their native word?
-- If they'd naturally say "cash" → keep it
-- If they'd use local word → translate it
+Keep "cash" as loanword IF:
+- The word "cash" is commonly used in casual speech among 25-42 year olds
+- It appears in everyday conversation, not just business contexts
+- Using "cash" feels more direct and punchy than the local equivalent
+- Western European languages often naturalize "cash" successfully
 
-Character limit consideration:
-If local word is significantly longer than "cash" (4 chars), and you're near the 24-char limit, keeping "cash" may be necessary.
+Translate to local money word IF:
+- Your language has naturalized a phonetic version (like "keš" in some Slavic languages)
+- The local word for "money" or "cash" is equally short and punchy
+- "Cash" as English loanword feels forced or corporate in your language
+- Slavic languages often prefer local terms or naturalized versions
+
+TRANSLATION STRUCTURE:
+Concept: "CASH REWARDS ONLY" = Only rewards in cash form (not bonus points, spins, or fake currencies)
+
+Structure pattern: [ONLY/JUST] [WORD_FOR_REWARDS] [IN/OF] [CASH/MONEY_TERM]
+
+Word choice guidance:
+- "ONLY": Use the most casual, direct way to say "only" or "just" in your language
+- "REWARDS": Choose between words meaning "prizes", "winnings", "gains" based on which is most common in casino contexts in your language
+- "CASH": Apply loanword decision framework above
+
+Language structure considerations:
+- Some languages form compound words (especially Germanic languages) → saves characters
+- Some languages use colloquial structures that drop particles → more punchy
+- Prioritize natural flow over literal word order
+
+DO NOT use words meaning "real" or "genuine" or "living" → these add nothing and waste characters.
 </cash_loanword_decision>
 
 <length_optimization_strategy>
