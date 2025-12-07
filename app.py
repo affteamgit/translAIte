@@ -180,10 +180,32 @@ def translate_with_gpt(prompt: str, temperature: float = 0.3) -> Optional[str]:
         st.error(f"GPT-5.1 translation failed: {e}")
         return None
 
+def clean_json_output(text: str) -> str:
+    """Clean model output to extract pure JSON"""
+    if not text:
+        return ""
+
+    # Remove markdown code fences
+    text = re.sub(r'^```json\s*\n?', '', text, flags=re.MULTILINE)
+    text = re.sub(r'^```\s*\n?', '', text, flags=re.MULTILINE)
+    text = re.sub(r'\n?```\s*$', '', text, flags=re.MULTILINE)
+
+    # Try to find JSON object in the text
+    # Look for content between first { and last }
+    start = text.find('{')
+    end = text.rfind('}')
+
+    if start != -1 and end != -1 and end > start:
+        text = text[start:end+1]
+
+    return text.strip()
+
 def validate_json(json_str: str) -> tuple[bool, Optional[Dict], str]:
     """Validate JSON string and return parsed object"""
     try:
-        parsed = json.loads(json_str)
+        # Clean the JSON string first
+        cleaned = clean_json_output(json_str)
+        parsed = json.loads(cleaned)
         return True, parsed, ""
     except json.JSONDecodeError as e:
         return False, None, f"Invalid JSON: {e}"
