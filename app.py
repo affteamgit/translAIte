@@ -6,6 +6,38 @@ import anthropic
 from openai import OpenAI
 from typing import Dict, Any, Optional
 
+# Reference translations for evaluation
+REFERENCE_TRANSLATIONS = {
+    "French": {
+        "hero_headline": "ZERO PIPEAU CASINO",
+        "hero_subheadline": "Que des gains en cash"
+    },
+    "Spanish": {
+        "hero_headline": "CASINO SIN RODEOS",
+        "hero_subheadline": "Solo premios en cash"
+    },
+    "Italian": {
+        "hero_headline": "ZERO FUFFA CASINÒ",
+        "hero_subheadline": "Solo premi in cash"
+    },
+    "German": {
+        "hero_headline": "CASINO OHNE TRICKS",
+        "hero_subheadline": "Nur Cash-Gewinne"
+    },
+    "Slovenian": {
+        "hero_headline": "KAZINO BREZ TRIKOV",
+        "hero_subheadline": "Samo denarne nagrade"
+    },
+    "Serbian": {
+        "hero_headline": "KAZINO BEZ TRIKOVA",
+        "hero_subheadline": "Samo keš nagrade"
+    },
+    "Russian": {
+        "hero_headline": "КАЗИНО БЕЗ ФОКУСОВ",
+        "hero_subheadline": "Только денежные призы"
+    }
+}
+
 # Page configuration
 st.set_page_config(
     page_title="Translation Prompt Tester",
@@ -139,6 +171,43 @@ def validate_json(json_str: str) -> tuple[bool, Optional[Dict], str]:
         return True, parsed, ""
     except json.JSONDecodeError as e:
         return False, None, f"Invalid JSON: {e}"
+
+def evaluate_against_reference(translation: Dict[str, Any], target_language: str) -> Dict[str, Any]:
+    """Evaluate translation against reference translations"""
+    # Check if we have reference translations for this language
+    if target_language not in REFERENCE_TRANSLATIONS:
+        return {"has_reference": False}
+
+    reference = REFERENCE_TRANSLATIONS[target_language]
+    results = {"has_reference": True, "matches": []}
+
+    # Check hero_headline
+    if "hero_headline" in translation and "hero_headline" in reference:
+        actual = translation["hero_headline"].strip()
+        expected = reference["hero_headline"]
+        matches = actual == expected
+        results["matches"].append({
+            "field": "hero_headline",
+            "expected": expected,
+            "actual": actual,
+            "matches": matches,
+            "char_count": len(actual)
+        })
+
+    # Check hero_subheadline
+    if "hero_subheadline" in translation and "hero_subheadline" in reference:
+        actual = translation["hero_subheadline"].strip()
+        expected = reference["hero_subheadline"]
+        matches = actual == expected
+        results["matches"].append({
+            "field": "hero_subheadline",
+            "expected": expected,
+            "actual": actual,
+            "matches": matches,
+            "char_count": len(actual)
+        })
+
+    return results
 
 def main():
     st.title("🌐 Translation Prompt Tester")
@@ -284,6 +353,48 @@ def main():
                             st.success(f"✅ {check_name}")
                         else:
                             st.error(f"❌ {check_name}")
+
+                    # Reference translation evaluation
+                    eval_results = evaluate_against_reference(result_parsed, target_language)
+
+                    if eval_results["has_reference"]:
+                        st.subheader("📚 Reference Match Evaluation")
+                        st.info(f"Comparing against approved {target_language} translations")
+
+                        for match_info in eval_results["matches"]:
+                            field = match_info["field"]
+                            expected = match_info["expected"]
+                            actual = match_info["actual"]
+                            matches = match_info["matches"]
+                            char_count = match_info["char_count"]
+
+                            # Determine character limit based on field
+                            if field == "hero_headline":
+                                char_limit = 20
+                                within_limit = char_count <= char_limit
+                            elif field == "hero_subheadline":
+                                char_limit = 24
+                                within_limit = char_count <= char_limit
+                            else:
+                                char_limit = None
+                                within_limit = True
+
+                            # Display match status
+                            if matches and within_limit:
+                                st.success(f"✅ **{field}**: Perfect match! ({char_count}/{char_limit} chars)")
+                            elif matches and not within_limit:
+                                st.warning(f"⚠️ **{field}**: Matches reference but exceeds limit ({char_count}/{char_limit} chars)")
+                            else:
+                                # Show comparison
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    status_icon = "✅" if within_limit else "⚠️"
+                                    st.error(f"❌ **{field}** ({char_count}/{char_limit} chars {status_icon})")
+                                    st.text("Expected:")
+                                    st.code(expected, language="text")
+                                with col2:
+                                    st.text("Got:")
+                                    st.code(actual, language="text")
 
                     # Download button
                     st.download_button(
