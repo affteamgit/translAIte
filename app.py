@@ -261,47 +261,6 @@ def validate_json(json_str: str) -> tuple[bool, Optional[Dict], str]:
     except json.JSONDecodeError as e:
         return False, None, f"Invalid JSON: {e}"
 
-def process_complex_json(parsed_json: Dict) -> tuple[Dict, Optional[str], bool]:
-    """
-    Process complex JSON structure and extract English source for translation.
-
-    Supports format:
-    {
-      "brand_context": { ... },
-      "translations": {
-        "1": { "code": "en", "headline": "...", "subheadline": "..." },
-        ...
-      }
-    }
-
-    Returns:
-        tuple: (source_json, brand_context_str, is_complex)
-    """
-    # Check if this is the complex format
-    if "translations" in parsed_json:
-        # Extract English source from translations
-        for key, translation in parsed_json["translations"].items():
-            if translation.get("code") in ["en", "en-us", "en-gb"]:
-                # Build simple source JSON from English entry
-                source_json = {}
-                if "headline" in translation:
-                    source_json["hero_headline"] = translation["headline"]
-                if "subheadline" in translation:
-                    source_json["hero_subheadline"] = translation["subheadline"]
-
-                # Extract brand context if available
-                brand_context = None
-                if "brand_context" in parsed_json:
-                    brand_context = json.dumps(parsed_json["brand_context"], indent=2)
-
-                return source_json, brand_context, True
-
-        # If no English entry found, raise error
-        raise ValueError("No English (en) entry found in translations")
-
-    # Not complex format, return as-is
-    return parsed_json, None, False
-
 def compile_all_results_for_copy(all_results: Dict[str, Any], json_parsed: Dict) -> str:
     """Compile all translation results into a copyable format"""
     output_lines = []
@@ -486,24 +445,6 @@ def main():
         if not json_valid:
             st.error(json_error)
 
-        # Process complex JSON if needed
-        source_json = json_parsed
-        brand_context = None
-        is_complex = False
-
-        if json_valid:
-            try:
-                source_json, brand_context, is_complex = process_complex_json(json_parsed)
-                if is_complex:
-                    st.info("📦 Complex JSON detected - extracted English source for translation")
-                    st.json(source_json, expanded=False)
-                    if brand_context:
-                        with st.expander("Brand Context"):
-                            st.code(brand_context, language="json")
-            except ValueError as e:
-                st.error(f"Error processing complex JSON: {e}")
-                json_valid = False
-
         # Translate button
         translate_button = st.button(
             "🚀 Translate",
@@ -519,24 +460,16 @@ def main():
             # Translate selected languages
             all_results = {}
 
-            # Convert source_json to string for translation
-            json_input_str = json.dumps(source_json, indent=2)
-
             with st.spinner(f"Translating to {len(selected_languages)} language(s)..."):
                 for language in selected_languages:
-                    # Add brand context to glossary if available
-                    glossary_dict = {}
-                    if brand_context:
-                        glossary_dict["brand_context"] = brand_context
-
                     # Format the prompt
                     formatted_prompt = format_prompt(
                         template=prompt_template,
                         target_language=language,
                         region_variant=language,
                         context_path="translation",
-                        glossary=glossary_dict,
-                        json_input=json_input_str
+                        glossary={},
+                        json_input=json_input
                     )
 
                     # Call appropriate model
@@ -570,7 +503,7 @@ def main():
             st.subheader("📋 Copy All Results")
             # Filter compile function to only show selected languages
             filtered_results = {lang: all_results[lang] for lang in selected_languages if lang in all_results}
-            compiled_results = compile_all_results_for_copy(filtered_results, source_json)
+            compiled_results = compile_all_results_for_copy(filtered_results, json_parsed)
 
             with st.expander("View/Copy All Translation Results", expanded=False):
                 st.code(compiled_results, language="text")
