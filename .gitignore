@@ -21,5 +21,12 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Test outputs
+# Test outputs and files
 results_*.txt
+test_translation.py
+test_cases.json
+reasoning.txt
+COMPARISON_RESULTS.md
+OPTIMIZATION_SUMMARY.md
+prompt.txt
+prompt_optimized.txt

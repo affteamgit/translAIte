@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 import anthropic
 from openai import OpenAI
+import google.generativeai as genai
 from typing import Dict, Any, Optional
 
 # Reference translations for evaluation
@@ -78,6 +79,16 @@ def get_openai_client():
         return OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
     except Exception as e:
         st.error(f"Failed to initialize OpenAI client: {e}")
+        return None
+
+@st.cache_resource
+def get_gemini_client():
+    """Initialize Gemini client with API key from secrets"""
+    try:
+        genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+        return genai.GenerativeModel("gemini-3-pro-preview")
+    except Exception as e:
+        st.error(f"Failed to initialize Gemini client: {e}")
         return None
 
 def load_prompt_template() -> str:
@@ -180,6 +191,26 @@ def translate_with_gpt(prompt: str, temperature: float = 0.3) -> Optional[str]:
         st.error(f"GPT-5.1 translation failed: {e}")
         return None
 
+def translate_with_gemini(prompt: str, temperature: float = 0.3) -> Optional[str]:
+    """Call Gemini 3 Pro with the formatted prompt"""
+    model = get_gemini_client()
+    if not model:
+        return None
+
+    try:
+        with st.spinner("Translating with Gemini 3 Pro..."):
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=temperature,
+                    max_output_tokens=4000,
+                )
+            )
+            return response.text
+    except Exception as e:
+        st.error(f"Gemini 3 Pro translation failed: {e}")
+        return None
+
 def clean_json_output(text: str) -> str:
     """Clean model output to extract pure JSON"""
     if not text:
@@ -265,7 +296,7 @@ def main():
         # Model selection
         model_choice = st.selectbox(
             "Select Translation Model",
-            ["Claude Opus 4.5", "Claude Sonnet 4.5", "GPT-5.1"],
+            ["Claude Opus 4.5", "Claude Sonnet 4.5", "GPT-5.1", "Gemini 3 Pro"],
             help="Choose which AI model to use for translation"
         )
 
@@ -349,8 +380,10 @@ def main():
                         result = translate_with_opus(formatted_prompt, temperature)
                     elif model_choice == "Claude Sonnet 4.5":
                         result = translate_with_sonnet(formatted_prompt, temperature)
-                    else:
+                    elif model_choice == "GPT-5.1":
                         result = translate_with_gpt(formatted_prompt, temperature)
+                    else:  # Gemini 3 Pro
+                        result = translate_with_gemini(formatted_prompt, temperature)
 
                     # Store result
                     if result:
@@ -473,6 +506,7 @@ def main():
         - **Claude Opus 4.5**: Anthropic's most capable model
         - **Claude Sonnet 4.5**: Anthropic's balanced model (faster, cost-effective)
         - **GPT-5.1**: OpenAI's latest model
+        - **Gemini 3 Pro**: Google's newest preview model
 
         ### How to use:
         1. Select your translation model
