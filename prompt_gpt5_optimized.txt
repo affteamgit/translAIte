@@ -187,7 +187,8 @@ Remember:
 - Use native script for your language
 
 Preserve all keys, placeholders {like_this}, and HTML tags <like_this> exactly.
-Output ONLY valid JSON - no explanations, no markdown, no extra text.
+
+Output your translation as valid JSON. You may include brief explanations or notes if helpful, but the JSON translation must be included and properly formatted.
 </task>
 
 <final_instruction>
