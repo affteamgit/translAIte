@@ -112,8 +112,8 @@ def get_gemini_client():
         return None
 
 def load_prompt_template() -> str:
-    """Load the optimized GPT-5.1 prompt template"""
-    prompt_path = Path(__file__).parent / "prompt_gpt5_optimized.txt"
+    """Load the Zero BS focused prompt template"""
+    prompt_path = Path(__file__).parent / "prompt_zero_bs_focused.txt"
     try:
         with open(prompt_path, 'r', encoding='utf-8') as f:
             return f.read()
