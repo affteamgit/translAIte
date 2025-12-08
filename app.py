@@ -265,11 +265,11 @@ def compile_all_results_for_copy(all_results: Dict[str, Any], json_parsed: Dict)
     """Compile all translation results into a copyable format"""
     output_lines = []
     output_lines.append("=" * 80)
-    output_lines.append("TRANSLATION RESULTS - ALL LANGUAGES")
+    output_lines.append("TRANSLATION RESULTS - SELECTED LANGUAGES")
     output_lines.append("=" * 80)
     output_lines.append("")
 
-    for language in REFERENCE_TRANSLATIONS.keys():
+    for language in all_results.keys():
         result_data = all_results.get(language)
         if not result_data or not result_data.get("valid"):
             continue
@@ -401,7 +401,28 @@ def main():
         # Target language configuration
         st.subheader("Language Settings")
 
-        st.info("📋 Will translate to all 16 reference languages: French, Spanish, Italian, German, Russian, Japanese, Indonesian, Simplified Chinese, Traditional Chinese, Korean, Portuguese (Portugal), Portuguese (Brazil), Turkish, Hindi, Vietnamese, Arabic (Peninsular)")
+        # Language selection
+        all_languages = list(REFERENCE_TRANSLATIONS.keys())
+
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            selected_languages = st.multiselect(
+                "Select languages to translate",
+                options=all_languages,
+                default=all_languages,
+                help="Choose which languages to translate. Select multiple or all."
+            )
+        with col_b:
+            st.write("")  # Spacing
+            st.write("")  # Spacing
+            if st.button("Select All", use_container_width=True):
+                selected_languages = all_languages
+                st.rerun()
+
+        if not selected_languages:
+            st.warning("⚠️ Please select at least one language to translate")
+        else:
+            st.info(f"📋 Will translate to {len(selected_languages)} language(s): {', '.join(selected_languages)}")
 
         # JSON input to translate
         st.subheader("JSON to Translate")
@@ -428,7 +449,7 @@ def main():
         translate_button = st.button(
             "🚀 Translate",
             type="primary",
-            disabled=not json_valid,
+            disabled=not json_valid or not selected_languages,
             use_container_width=True
         )
 
@@ -436,11 +457,11 @@ def main():
         st.header("Translation Results")
 
         if translate_button:
-            # Translate all 16 reference languages
+            # Translate selected languages
             all_results = {}
 
-            with st.spinner("Translating to all 16 languages..."):
-                for language in REFERENCE_TRANSLATIONS.keys():
+            with st.spinner(f"Translating to {len(selected_languages)} language(s)..."):
+                for language in selected_languages:
                     # Format the prompt
                     formatted_prompt = format_prompt(
                         template=prompt_template,
@@ -480,16 +501,18 @@ def main():
 
             # Add copy button for all results
             st.subheader("📋 Copy All Results")
-            compiled_results = compile_all_results_for_copy(all_results, json_parsed)
+            # Filter compile function to only show selected languages
+            filtered_results = {lang: all_results[lang] for lang in selected_languages if lang in all_results}
+            compiled_results = compile_all_results_for_copy(filtered_results, json_parsed)
 
             with st.expander("View/Copy All Translation Results", expanded=False):
                 st.code(compiled_results, language="text")
                 st.info("💡 Tip: Click the copy button in the top-right corner of the code block above to copy all results")
 
             # Display results in tabs
-            tabs = st.tabs(list(REFERENCE_TRANSLATIONS.keys()))
+            tabs = st.tabs(selected_languages)
 
-            for idx, language in enumerate(REFERENCE_TRANSLATIONS.keys()):
+            for idx, language in enumerate(selected_languages):
                 with tabs[idx]:
                     result_data = all_results.get(language)
 
@@ -580,7 +603,7 @@ def main():
                         st.error(result_data.get("error", "Unknown error"))
 
         else:
-            st.info("👈 Configure settings and click 'Translate' to see results for all 16 languages")
+            st.info("👈 Select languages, configure settings, and click 'Translate' to see results")
 
     # Sidebar with information
     with st.sidebar:
