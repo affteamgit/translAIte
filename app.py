@@ -261,6 +261,62 @@ def validate_json(json_str: str) -> tuple[bool, Optional[Dict], str]:
     except json.JSONDecodeError as e:
         return False, None, f"Invalid JSON: {e}"
 
+def compile_all_results_for_copy(all_results: Dict[str, Any], json_parsed: Dict) -> str:
+    """Compile all translation results into a copyable format"""
+    output_lines = []
+    output_lines.append("=" * 80)
+    output_lines.append("TRANSLATION RESULTS - ALL LANGUAGES")
+    output_lines.append("=" * 80)
+    output_lines.append("")
+
+    for language in REFERENCE_TRANSLATIONS.keys():
+        result_data = all_results.get(language)
+        if not result_data or not result_data.get("valid"):
+            continue
+
+        result_parsed = result_data["parsed"]
+
+        output_lines.append(f"\n{'='*80}")
+        output_lines.append(f"LANGUAGE: {language}")
+        output_lines.append(f"{'='*80}\n")
+
+        # Show hero_headline comparison
+        if "hero_headline" in result_parsed:
+            output_lines.append("HERO HEADLINE:")
+            output_lines.append(f"  Translation: {result_parsed['hero_headline']}")
+            output_lines.append(f"  Char count:  {len(result_parsed['hero_headline'])} / 20")
+            if language in REFERENCE_TRANSLATIONS and "hero_headline" in REFERENCE_TRANSLATIONS[language]:
+                ref = REFERENCE_TRANSLATIONS[language]["hero_headline"]
+                match_status = "✅ MATCH" if result_parsed['hero_headline'] == ref else "❌ NO MATCH"
+                output_lines.append(f"  Reference:   {ref}")
+                output_lines.append(f"  Status:      {match_status}")
+            output_lines.append("")
+
+        # Show hero_subheadline comparison
+        if "hero_subheadline" in result_parsed:
+            output_lines.append("HERO SUBHEADLINE:")
+            output_lines.append(f"  Translation: {result_parsed['hero_subheadline']}")
+            output_lines.append(f"  Char count:  {len(result_parsed['hero_subheadline'])} / 24")
+            if language in REFERENCE_TRANSLATIONS and "hero_subheadline" in REFERENCE_TRANSLATIONS[language]:
+                ref = REFERENCE_TRANSLATIONS[language]["hero_subheadline"]
+                match_status = "✅ MATCH" if result_parsed['hero_subheadline'] == ref else "❌ NO MATCH"
+                output_lines.append(f"  Reference:   {ref}")
+                output_lines.append(f"  Status:      {match_status}")
+            output_lines.append("")
+
+        # Show other fields
+        output_lines.append("OTHER FIELDS:")
+        for key, value in result_parsed.items():
+            if key not in ["hero_headline", "hero_subheadline"]:
+                output_lines.append(f"  {key}: {value}")
+        output_lines.append("")
+
+    output_lines.append("=" * 80)
+    output_lines.append("END OF RESULTS")
+    output_lines.append("=" * 80)
+
+    return "\n".join(output_lines)
+
 def evaluate_against_reference(translation: Dict[str, Any], target_language: str) -> Dict[str, Any]:
     """Evaluate translation against reference translations"""
     # Check if we have reference translations for this language
@@ -421,6 +477,14 @@ def main():
                             "error": "Translation failed",
                             "raw": None
                         }
+
+            # Add copy button for all results
+            st.subheader("📋 Copy All Results")
+            compiled_results = compile_all_results_for_copy(all_results, json_parsed)
+
+            with st.expander("View/Copy All Translation Results", expanded=False):
+                st.code(compiled_results, language="text")
+                st.info("💡 Tip: Click the copy button in the top-right corner of the code block above to copy all results")
 
             # Display results in tabs
             tabs = st.tabs(list(REFERENCE_TRANSLATIONS.keys()))
