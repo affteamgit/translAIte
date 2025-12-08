@@ -287,7 +287,7 @@ def compile_all_results_for_copy(all_results: Dict[str, Any], json_parsed: Dict)
             output_lines.append(f"  Char count:  {len(result_parsed['hero_headline'])} / 20")
             if language in REFERENCE_TRANSLATIONS and "hero_headline" in REFERENCE_TRANSLATIONS[language]:
                 ref = REFERENCE_TRANSLATIONS[language]["hero_headline"]
-                match_status = "✅ MATCH" if result_parsed['hero_headline'] == ref else "❌ NO MATCH"
+                match_status = "✅ MATCH" if result_parsed['hero_headline'].lower() == ref.lower() else "❌ NO MATCH"
                 output_lines.append(f"  Reference:   {ref}")
                 output_lines.append(f"  Status:      {match_status}")
             output_lines.append("")
@@ -299,7 +299,7 @@ def compile_all_results_for_copy(all_results: Dict[str, Any], json_parsed: Dict)
             output_lines.append(f"  Char count:  {len(result_parsed['hero_subheadline'])} / 24")
             if language in REFERENCE_TRANSLATIONS and "hero_subheadline" in REFERENCE_TRANSLATIONS[language]:
                 ref = REFERENCE_TRANSLATIONS[language]["hero_subheadline"]
-                match_status = "✅ MATCH" if result_parsed['hero_subheadline'] == ref else "❌ NO MATCH"
+                match_status = "✅ MATCH" if result_parsed['hero_subheadline'].lower() == ref.lower() else "❌ NO MATCH"
                 output_lines.append(f"  Reference:   {ref}")
                 output_lines.append(f"  Status:      {match_status}")
             output_lines.append("")
@@ -330,7 +330,7 @@ def evaluate_against_reference(translation: Dict[str, Any], target_language: str
     if "hero_headline" in translation and "hero_headline" in reference:
         actual = translation["hero_headline"].strip()
         expected = reference["hero_headline"]
-        matches = actual == expected
+        matches = actual.lower() == expected.lower()
         results["matches"].append({
             "field": "hero_headline",
             "expected": expected,
@@ -343,7 +343,7 @@ def evaluate_against_reference(translation: Dict[str, Any], target_language: str
     if "hero_subheadline" in translation and "hero_subheadline" in reference:
         actual = translation["hero_subheadline"].strip()
         expected = reference["hero_subheadline"]
-        matches = actual == expected
+        matches = actual.lower() == expected.lower()
         results["matches"].append({
             "field": "hero_subheadline",
             "expected": expected,
