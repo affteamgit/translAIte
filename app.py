@@ -52,6 +52,34 @@ REFERENCE_TRANSLATIONS = {
     "Traditional Chinese": {
         "hero_headline": "無廢話娛樂場",
         "hero_subheadline": "純粹現金獎勵"
+    },
+    "Korean": {
+        "hero_headline": "투명한 카지노",
+        "hero_subheadline": "오직 현금상금"
+    },
+    "Portuguese (Portugal)": {
+        "hero_headline": "CASINO A SÉRIO",
+        "hero_subheadline": "Prémios em dinheiro"
+    },
+    "Portuguese (Brazil)": {
+        "hero_headline": "CASSINO NA VEIA",
+        "hero_subheadline": "Prêmios em dinheiro"
+    },
+    "Turkish": {
+        "hero_headline": "DOLANSIZ CASINO",
+        "hero_subheadline": "Sadece nakit ödüller"
+    },
+    "Hindi": {
+        "hero_headline": "साफ़ सुथरा कैसिनो",
+        "hero_subheadline": "सिर्फ नकद इनाम"
+    },
+    "Vietnamese": {
+        "hero_headline": "SÒNG BẠC KHÔNG XẠO",
+        "hero_subheadline": "Chỉ thưởng tiền mặt thật"
+    },
+    "Arabic (Peninsular)": {
+        "hero_headline": "كازينو بلا تعقيد",
+        "hero_subheadline": "مكافآت نقدية بس"
     }
 }
 
@@ -325,7 +353,7 @@ def main():
         # Target language configuration
         st.subheader("Language Settings")
 
-        st.info("📋 Will translate to all 11 reference languages: French, Spanish, Italian, German, Slovenian, Serbian, Russian, Japanese, Indonesian, Simplified Chinese, Traditional Chinese")
+        st.info("📋 Will translate to all 18 reference languages: French, Spanish, Italian, German, Slovenian, Serbian, Russian, Japanese, Indonesian, Simplified Chinese, Traditional Chinese, Korean, Portuguese (Portugal), Portuguese (Brazil), Turkish, Hindi, Vietnamese, Arabic (Peninsular)")
 
         # JSON input to translate
         st.subheader("JSON to Translate")
@@ -360,10 +388,10 @@ def main():
         st.header("Translation Results")
 
         if translate_button:
-            # Translate all 11 reference languages
+            # Translate all 18 reference languages
             all_results = {}
 
-            with st.spinner("Translating to all 11 languages..."):
+            with st.spinner("Translating to all 18 languages..."):
                 for language in REFERENCE_TRANSLATIONS.keys():
                     # Format the prompt
                     formatted_prompt = format_prompt(
@@ -496,7 +524,7 @@ def main():
                         st.error(result_data.get("error", "Unknown error"))
 
         else:
-            st.info("👈 Configure settings and click 'Translate' to see results for all 11 languages")
+            st.info("👈 Configure settings and click 'Translate' to see results for all 18 languages")
 
     # Sidebar with information
     with st.sidebar:
