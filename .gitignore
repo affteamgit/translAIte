@@ -40,3 +40,4 @@ multi_lang_optimization.log
 .env
 prompt_gpt5_optimized_backup.txt
 prompt_gpt5_optimized_v2.txt
+prompt_gpt5_optimized_automated_backup.txt
