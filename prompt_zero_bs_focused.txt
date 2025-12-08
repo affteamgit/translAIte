@@ -214,20 +214,22 @@ ALWAYS translate:
 </technical_preservation>
 
 <output_format>
-Return ONLY valid JSON:
+CRITICAL: You MUST output ONLY valid JSON. No other text whatsoever.
 
+Your response must be ONLY this structure:
 {
   "key1": "translated value",
   "key2": "translated value"
 }
 
-DO NOT include:
-- Markdown fences (```)
-- Explanations before/after
-- Comments or notes
-- Character counts
+ABSOLUTELY FORBIDDEN:
+- NO markdown code fences (no ```)
+- NO explanations before or after the JSON
+- NO comments or notes
+- NO character counts
+- NO text of any kind except the raw JSON object
 
-Must be production-ready, parseable JSON.
+Your entire response = raw JSON only. Nothing else.
 </output_format>
 
 <quality_checklist>

@@ -403,13 +403,14 @@ def main():
 
         # Language selection
         all_languages = list(REFERENCE_TRANSLATIONS.keys())
+        default_languages = ["Spanish", "German", "Italian", "Russian", "French"]
 
         col_a, col_b = st.columns([3, 1])
         with col_a:
             selected_languages = st.multiselect(
                 "Select languages to translate",
                 options=all_languages,
-                default=all_languages,
+                default=default_languages,
                 help="Choose which languages to translate. Select multiple or all."
             )
         with col_b:
