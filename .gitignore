@@ -10,6 +10,7 @@ __pycache__/
 venv/
 env/
 ENV/
+optimization_run.log
 
 # IDE
 .vscode/
@@ -35,3 +36,7 @@ prompt_optimized.txt
 optimize_prompt.py
 OPTIMIZATION_README.md
 optimization_results/
+multi_lang_optimization.log
+.env
+prompt_gpt5_optimized_backup.txt
+prompt_gpt5_optimized_v2.txt

@@ -421,6 +421,1076 @@ If ANY critical check fails → MUST revise before submitting.
 If character limit exceeded → MUST shorten (no exceptions).
 </quality_checklist>
 
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model respected character limits and tone but optimized for “natural” phrasing instead of matching the intended structure and key words of the source. Two clear patterns:
+
+1. **Structural rephrasing instead of mirroring**  
+   - “ZERO PIPEAU CASINO” → “CASINO SANS PIPEAU”  
+   The model kept the meaning but changed the word order and emphasis. It tried to sound idiomatic rather than preserving the punchy, slogan-like structure and the position of key terms.
+
+2. **Dropping or reshaping key words**  
+   - “Que des gains en cash” → “Que des gains cash”  
+   The model removed the small function word (“en”) to sound snappier, but that altered the exact expected wording.  
+   In general, the model is optimizing for fluency and brevity within the character limit, instead of:
+   - preserving all **content words** from the source when possible, and  
+   - preserving **short function words** that are part of the intended brand phrasing, as long as limits are respected.
+
+To fix this, the prompt needs:
+- An explicit hierarchy: within character limits, **do not drop or swap key words or small connector words** unless absolutely necessary.
+- A specific instruction for headlines/taglines: **maintain the original structure and word order as much as possible**; only adjust if it’s ungrammatical or exceeds the limit.
+- A reminder that “naturalness” is secondary to **brand phrasing fidelity** when both are acceptable.
+
+PROMPT MODIFICATIONS:
+Add/modify these sections in the existing prompt.
+
+1) Strengthen structural fidelity for short UI texts (headlines, taglines)
+
+```text
+<structural_fidelity>
+For short, high-visibility texts (e.g. hero_headline, hero_subheadline, taglines, buttons):
+
+1. PRIORITIZE preserving:
+   - The original word order and structure
+   - All main content words from the source
+   - Short function words that are part of the brand phrasing
+
+2. ONLY change structure or drop words if:
+   - The result would be ungrammatical or nonsensical in the target language, OR
+   - You cannot respect the character limit otherwise.
+
+3. If you must adjust:
+   - First try shortening by using shorter synonyms
+   - Avoid changing the order of key terms unless strictly necessary
+   - Avoid removing small connector words if the character limit still allows them
+</structural_fidelity>
+```
+
+2) Clarify how to balance character limits vs. fidelity
+
+```text
+<char_limit_strategy>
+When working under character limits:
+
+1. FIRST: Try to keep all original meaning and key words, including short connectors, while staying within the limit.
+2. SECOND: If you exceed the limit, reduce length by:
+   - Choosing shorter synonyms
+   - Removing redundant modifiers or intensifiers
+3. ONLY AS A LAST RESORT:
+   - Reorder words
+   - Remove non-critical words
+When multiple valid options fit the limit, choose the one that:
+   - Stays closest to the original structure and wording
+   - Preserves the punchy, slogan-like feel of the source
+</char_limit_strategy>
+```
+
+3) Make brand phrasing fidelity explicit
+
+```text
+<brand_fidelity>
+For brand-facing lines (headlines, subheadlines, slogans):
+
+- Treat the source as a deliberate, crafted slogan.
+- Do NOT "improve" or soften it just to sound more standard or corporate.
+- Do NOT replace a direct, edgy structure with a more neutral or explanatory one if the original structure works in the target language.
+- Keep the same level of directness and punch. If the original is short and abrupt, keep it short and abrupt.
+</brand_fidelity>
+```
+
+4) Add a micro-check step for these specific keys
+
+```text
+<qa_microcheck>
+After translating, for keys like "hero_headline" and "hero_subheadline":
+
+1. Check: Did you keep the same core words and structure as the source, as much as the target language and character limit allow?
+2. If you changed word order or removed a word:
+   - Ask: Was this strictly necessary for grammar or character limits?
+   - If not strictly necessary, revert to a closer structure.
+</qa_microcheck>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model:
+- Ignored the provided source text and “expected” target style, and instead coined its own slogan (“NULL TRICKS CASINO”).
+- Over‑literalized the anti‑BS idea into a different concept (“no tricks”) instead of preserving the original core message (“no bullshit / no BS”).
+- Prioritized brand attitude (edgy, creative) over fidelity to the given string, especially for short, high‑impact UI elements like hero headlines.
+- Did not treat the hero fields as “high‑risk” strings where semantic deviation is not allowed unless explicitly requested.
+- Was not explicitly instructed to:
+  - Stay as close as possible to the source wording/structure for headlines.
+  - Avoid inventing new taglines or re‑framing the message.
+  - Prefer direct equivalents of “BS / bullshit / tricks” over euphemistic or re‑framed alternatives when character limits allow.
+
+PROMPT MODIFICATIONS:
+(Additions/changes written as prompt text you can insert.)
+
+1) Strengthen fidelity to source text (especially for headlines)
+
+Add under `<task>` or as a new section:
+
+```text
+<fidelity_rules>
+For all strings, especially short UI elements (headlines, buttons, labels):
+- PRIORITIZE semantic fidelity to the source text.
+- Do NOT invent new slogans, taglines, or marketing angles.
+- Preserve the core meaning and tone of the source as closely as possible.
+- Keep the same message structure unless character limits absolutely require adjustment.
+If you must shorten due to character limits, remove less‑critical words but DO NOT change the core claim or angle.
+</fidelity_rules>
+```
+
+2) Clarify handling of “anti‑BS” wording vs. “tricks”
+
+Add under `<translation_philosophy>`:
+
+```text
+<meaning_hierarchy>
+When the source explicitly uses concepts like "no BS", "no bullshit", "no tricks", "no fine print":
+- Your FIRST priority is to convey the SAME core concept (e.g., "no BS / no bullshit") in the target language.
+- Do NOT arbitrarily replace "no BS" with "no tricks" or vice versa.
+- Only shift between related concepts (e.g., "BS" ↔ "tricks" ↔ "fine print") if:
+  1) The original concept cannot be expressed naturally within the character limit, AND
+  2) The replacement still clearly communicates the same anti‑deception / anti‑bullshit stance.
+</meaning_hierarchy>
+```
+
+3) Make hero fields “no‑creativity zones” for meaning
+
+Add a specific section for hero strings:
+
+```text
+<hero_strings>
+For keys like "hero_headline" and "hero_subheadline":
+- Treat them as HIGH‑PRIORITY, HIGH‑FIDELITY strings.
+- Do NOT:
+  - Invent new taglines
+  - Add or remove core ideas
+  - Change the main claim or angle
+- DO:
+  - Keep the same meaning and attitude as the source
+  - Use direct, punchy wording that fits within the character limits
+If a direct translation fits within the character limit, you MUST use it rather than a rephrased or re‑framed version.
+</hero_strings>
+```
+
+4) Explicit instruction on character‑limited creativity
+
+Extend `<character_limits>` with:
+
+```text
+<character_limit_strategy>
+When working under character limits:
+1. Start from a faithful translation of the source.
+2. THEN shorten by:
+   - Dropping non‑essential fillers
+   - Using shorter synonyms with the SAME meaning
+3. Do NOT:
+   - Introduce new metaphors or concepts
+   - Change "no BS" into a different promise (e.g., "no tricks") unless absolutely unavoidable.
+The final text must still clearly express the SAME promise and attitude as the source.
+</character_limit_strategy>
+```
+
+5) Reinforce “no invention” rule globally
+
+Add to `<critical_rules>`:
+
+```text
+5. Do NOT invent new marketing messages or slogans. Always base your translation directly on the given source text and preserve its core meaning.
+```
+
+These modifications collectively push the model to:
+- Stay semantically close to the source.
+- Avoid re‑framing “no BS” into “no tricks” unless forced by constraints.
+- Treat hero headlines/subheadlines as high‑fidelity, low‑creativity translations with only minimal, meaning‑preserving adjustments.
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model optimized for brand tone and slang (“ZERO BS CASINO”) instead of matching the intended semantic structure (“CASINO OHNE BULLSHIT”). There are two clear pattern issues:
+
+1. **Missing priority order between meaning vs. style**  
+   The prompt heavily emphasizes “rebellious, edgy, anti-BS” and slang, but doesn’t explicitly state that preserving the original meaning and structure of key brand messages (like hero headlines) has higher priority than inventing new slangy variants.
+
+2. **No explicit instruction to avoid re-framing or re-branding key phrases**  
+   For short, high-impact UI elements (hero_headline), the model is creatively rephrasing (“ZERO BS CASINO”) instead of doing a close, literal translation of the source concept. The prompt doesn’t say “do not introduce new metaphors / slogans / English phrases” for these critical keys.
+
+3. **Insufficient key-specific guidance**  
+   The character-limit rules are clear, but there is no explicit guidance that:
+   - Certain keys (like hero_headline) must stay semantically and structurally close to the source.
+   - The model must not add or remove core concepts (e.g., turning “casino without bullshit” into “zero BS casino” changes structure and feels like a new slogan).
+
+PROMPT MODIFICATIONS:
+
+Add this section (or merge into existing sections):
+
+```xml
+<semantic_priority>
+For all translations:
+1. MEANING FIRST, STYLE SECOND:
+   - Preserve the original meaning and intent of each string before applying brand tone.
+   - Do NOT introduce new concepts, metaphors, or slogans that are not present in the source.
+
+2. CRITICAL KEYS (e.g. hero_headline, hero_subheadline):
+   - Keep these as close as possible to the source meaning and structure.
+   - Do NOT:
+     - Rebrand or rephrase them into a different slogan.
+     - Switch language (e.g. keep them in the target language, do not invent new English phrases).
+     - Add or remove core elements of the message.
+   - You may adjust wording only as needed to:
+     - Fit character limits, and
+     - Sound natural in the target language,
+     while still clearly expressing the same idea as the source.
+
+3. SLANG & TONE:
+   - Use rebellious / anti-BS tone only AFTER the core meaning is correctly preserved.
+   - Slang must never override or distort the original message.
+</semantic_priority>
+```
+
+Reinforce in the translation_philosophy section:
+
+```xml
+<translation_philosophy>
+Core principle: REBELLIOUS but ACCESSIBLE
+
+This means:
+1. The original message and claim must remain intact.
+   - Do NOT replace the message with a different catchy phrase.
+   - Do NOT "improve" or "upgrade" the slogan; just adapt it.
+
+2. Prioritize local slang that conveys "anti-BS" attitude
+   - ONLY after the literal meaning is correctly transferred.
+   - If a more literal wording clearly expresses the same "no tricks / no BS" idea, prefer that over inventing a new expression.
+
+3. If forced to choose between:
+   - A very edgy rephrasing that changes the structure/meaning, and
+   - A more straightforward version that keeps the structure/meaning,
+   ALWAYS choose the straightforward version.
+</translation_philosophy>
+```
+
+Tighten the character_limits section with key-specific behavior:
+
+```xml
+<character_limits>
+🚨 ABSOLUTE HARD LIMITS (count includes spaces):
+- hero_headline: MAX 20 characters
+- hero_subheadline: MAX 24 characters
+
+These are HARD CONSTRAINTS that CANNOT be exceeded for UI layout reasons.
+
+For these keys:
+- First, create a translation that is semantically and structurally close to the source.
+- THEN shorten or adjust wording ONLY as much as needed to:
+  - Respect the character limit, and
+  - Stay faithful to the original meaning.
+- Do NOT change the message into a different slogan just to sound cooler or edgier.
+</character_limits>
+```
+
+Optionally, clarify in the task block:
+
+```xml
+<task>
+Translate the JSON string values from English to ${targetLanguage}.
+Preserve all keys, placeholders {like_this}, and HTML tags <like_this> exactly.
+Output ONLY valid JSON - no explanations, no markdown, no extra text.
+
+Do NOT rewrite or re-invent marketing slogans:
+- Your job is to TRANSLATE, not to copywrite new taglines.
+- Especially for short UI texts (titles, headlines, buttons), keep the same claim and structure as the source wherever possible.
+</task>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model:
+- Restructured the headline instead of preserving the original structure and emphasis.
+- Over-optimized for “edgy/anti-BS” branding and introduced a different phrase (“ZERO BS”) that is not in the source.
+- Treated the task partly as copywriting/localization rather than faithful translation within constraints.
+- Respected character limits but did not prioritize semantic and structural fidelity to the source phrase (“CASINO OHNE BULLSHIT” → “ZERO BS CASINO” changes word order, focus, and lexical choice).
+- Lacked explicit instruction on:
+  - Keeping the same core words and order when possible.
+  - Avoiding creative rewrites for short, high-visibility UI strings (like hero headlines) unless absolutely necessary for length.
+
+PROMPT MODIFICATIONS:
+
+Add/modify under `<task>`:
+
+```text
+For short, high-visibility UI strings (e.g. hero_headline, hero_subheadline):
+- Treat them as TRANSLATION tasks, not copywriting.
+- Preserve the original meaning, tone, and emphasis as closely as possible.
+- Do NOT introduce new concepts or metaphors that are not present in the source.
+- Only change structure or wording when required for:
+  (a) naturalness in the target language, or
+  (b) respecting the hard character limits.
+```
+
+Add under `<critical_rules>`:
+
+```text
+6. For all strings, prioritize semantic fidelity over creative rewriting.
+7. For hero_headline and hero_subheadline specifically:
+   - Keep the same core idea and emotional message.
+   - Avoid reordering elements or changing the main focus unless absolutely necessary for grammar or character limits.
+   - Do NOT replace the core “no tricks / no bullshit / no nonsense” idea with a different slogan or idiom that changes the structure or adds new branding.
+```
+
+Extend `<character_limits>` with explicit behavior:
+
+```text
+When adjusting for character limits:
+- FIRST try to shorten by removing filler words or simplifying, while keeping:
+  - the same key terms,
+  - the same basic word order,
+  - the same core message.
+- ONLY if this is impossible within the limit, you may slightly rephrase, but:
+  - Do NOT introduce new branding phrases.
+  - Do NOT change the meaning (e.g. from “without X” to “zero Y” if this alters focus or structure).
+```
+
+Add a short clarification under `<translation_philosophy>`:
+
+```text
+Balance between rebellion and accuracy:
+- The “rebellious” tone should be expressed THROUGH the translation of the existing message, not by inventing new slogans.
+- Especially for main headlines and key UI labels, your job is to localize the given phrase, not to create a different one.
+```
+
+Optionally add a dedicated section for headline behavior:
+
+```text
+<headline_guidelines>
+For keys like "hero_headline" and similar main headlines:
+- Mirror the source structure where possible (e.g. [subject] + [anti-BS qualifier]).
+- Preserve any explicit “no tricks / no bullshit / no nonsense” wording in meaning.
+- Do NOT swap positions of key elements (e.g. moving “casino” from front to back) unless required by target-language grammar or length.
+</headline_guidelines>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model optimized for character limits and brand tone but not for semantic alignment with the source. It:
+- Reframed the phrase structurally (“CASINO OHNE BULLSHIT” → “NULL BS CASINO”) instead of preserving the original meaning/order.
+- Over‑indexed on edgy/English slang (“BS”) instead of using a direct, clear expression of “no bullshit”.
+- Lacked an explicit instruction to:
+  - Preserve the core meaning and logical structure of key hero messages.
+  - Avoid replacing clear, direct language with stylized or cryptic slang.
+  - Prefer natural phrasing in the target language over “cool” Anglicisms, as long as character limits are met.
+
+In short: the prompt pushes for “rebellious” and “slangy” but doesn’t constrain *how far* the model can drift from the original structure/meaning for high‑impact UI elements like hero headlines.
+
+PROMPT MODIFICATIONS:
+
+Add this under `<task>`:
+
+- For key marketing surfaces (e.g. hero_headline, hero_subheadline), keep the core meaning and logical structure as close to the source as possible while adapting to natural target-language phrasing.
+- Do NOT change the core claim or flip its logic (e.g. “no X” must stay “no X”, not “only Y” unless the source already does that).
+- Do NOT introduce new metaphors, wordplay, or cryptic phrasing that is not clearly implied by the source.
+
+Add this under `<critical_rules>`:
+
+6. Preserve the original message’s intent and emphasis:
+   - Do NOT replace clear, direct wording with vague or overly stylized slang.
+   - Avoid invented abbreviations or Anglicisms unless they are widely understood and keep the meaning unmistakably clear.
+7. For hero_headline and hero_subheadline:
+   - Prioritize clarity and semantic fidelity over extra edginess.
+   - Keep the main words and their order as close to the source as character limits and natural grammar allow.
+
+Extend `<translation_philosophy>` with a clarifying block:
+
+4. Fidelity over flair for key lines
+   - High-visibility lines (like hero headlines/subheadlines) must:
+     - Clearly express the same promise as the source.
+     - Avoid “clever” rewrites that could change tone, strength, or clarity.
+   - Edginess should come from word choice that fits the original meaning, not from changing structure or inventing new slogans.
+
+Add a short check step at the end of the prompt:
+
+<quality_check>
+Before finalizing:
+1. For hero_headline and hero_subheadline:
+   - Confirm they express the same promise and “no-tricks / no-BS” attitude as the source.
+   - Confirm they are clear, natural, and immediately understandable in the target language.
+   - Confirm they respect the character limits.
+2. If a more “stylish” version would reduce clarity or alter the original claim, choose the clearer version.
+</quality_check>
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model optimized for brevity and slang over semantic fidelity to the source/expected line. It:
+- Replaced the explicit, readable “bullshit” concept with an abbreviation (“BS”), likely to stay within the character limit and/or sound edgy.
+- Treated the brand attitude (“anti-BS”) as license to introduce its own shorthand instead of preserving the full core meaning of the phrase.
+- Lacked explicit instruction on how to prioritize: it chose “edgy/short” over “clear, explicit meaning that matches the source”.
+- Did not get a clear rule that abbreviations or new slang must not change the core meaning or tone intensity of key hero lines.
+- Did not get explicit guidance that hero lines are “sacred” and should stay as close as possible in structure and meaning, only adjusting for character limits and naturalness.
+
+PROMPT MODIFICATIONS:
+
+Add this under `<translation_philosophy>` (or a new section right after it):
+
+```text
+<hero_copy_guidelines>
+Hero lines (headline + subheadline) are CRITICAL brand messages.
+
+When translating hero lines:
+1. PRIORITY ORDER:
+   a) Preserve the full core meaning of the source
+   b) Preserve the attitude and intensity (e.g., how strong or soft the wording is)
+   c) Stay within character limits
+   d) Sound natural and local
+
+2. Do NOT introduce new abbreviations, acronyms, or slang that:
+   - Weaken or dilute the original meaning
+   - Make the phrase less clear or less explicit than the source
+   - Change the perceived strength (e.g., turning a strong word into a softer or vaguer one)
+
+3. If you must shorten to fit character limits:
+   - First remove filler words or restructure the sentence
+   - Only then consider shorter synonyms that KEEP the same attitude and clarity
+   - Never replace a clear word with an obscure or ambiguous shorthand just to save characters
+
+4. For hero_headline and hero_subheadline specifically:
+   - Aim to keep the same structure and key concepts as the source
+   - Do NOT soften or censor the tone compared to the source
+   - Do NOT invent new metaphors or slogans; stay as close as possible to the original message while sounding natural.
+</hero_copy_guidelines>
+```
+
+Add this clarification inside `<critical_rules>`:
+
+```text
+6. Do NOT introduce unexplained abbreviations or acronyms in hero_headline or hero_subheadline that are not present in the source text.
+7. For hero_headline and hero_subheadline, do NOT replace strong, explicit wording with weaker or vaguer wording just to fit character limits. Adjust structure first, not meaning.
+```
+
+Optionally, add a short check step near the character limit instructions:
+
+```text
+<hero_validation_check>
+After writing hero_headline and hero_subheadline:
+1. Confirm they are within the character limits.
+2. Ask yourself:
+   - Does this keep the same clear meaning as the source?
+   - Is the attitude (strength, directness) at least as strong as the source?
+   - Did I avoid new abbreviations or slang that change clarity or tone?
+
+If any answer is NO, revise the line while staying within the character limit.
+</hero_validation_check>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model optimized for brand tone (“edgy”, “anti-BS”) and character limits, but not for semantic fidelity to the source. It freely rephrased “CASINO OHNE BULLSHIT” into a different structure (“ZERO BS CASINO”) that:
+- Keeps the core idea (no BS) but changes word order and phrasing
+- Introduces a different lexical choice (“ZERO” instead of “OHNE”)
+- Prioritized a catchy, English‑style slogan over a close match to the provided string
+
+Pattern:
+- The prompt strongly emphasizes brand voice, slang, and rebellion, but is weak on:
+  - “Stick close to the source wording and structure when possible”
+  - “Do not re‑sloganize or creatively rewrite if the source is already a punchy headline”
+- Character limits are enforced, but there is no explicit instruction that *within* those limits, the default is to preserve meaning and structure rather than re‑invent.
+- There is no explicit hierarchy of priorities (e.g., meaning > style > creativity), so the model over‑weights style/creativity.
+
+PROMPT MODIFICATIONS:
+
+Add a clear priority hierarchy under `<task>` or a new section:
+
+```text
+<translation_priorities>
+PRIORITY ORDER (from most to least important):
+1. Preserve the original meaning as closely as possible
+2. Respect all character limits
+3. Preserve the core structure and emphasis of the source (especially for short UI strings, headlines, buttons)
+4. Apply brand tone and light localization
+
+Do NOT create new slogans or rephrase creatively if the source text is already short, punchy, or slogan-like. In those cases, keep the translation as semantically and structurally close to the source as the target language allows, while staying within character limits.
+</translation_priorities>
+```
+
+Tighten guidance on headlines/subheadlines in `<character_limits>`:
+
+```text
+For hero_headline and hero_subheadline specifically:
+- Treat them as FIXED marketing messages, not as prompts for new slogan creation.
+- Do NOT change the core wording pattern or introduce new metaphors.
+- Only adjust wording as much as needed to:
+  a) be natural in the target language
+  b) fit the character limits
+  c) reflect brand tone WITHOUT changing the core message.
+```
+
+Clarify “rebellious but accessible” to limit over‑creative rewrites:
+
+```text
+<translation_philosophy>
+Core principle: REBELLIOUS but ACCESSIBLE
+
+This means:
+1. Start from a faithful translation of the source.
+2. Then, MINIMALLY adjust word choice to add an anti-BS attitude, as long as:
+   - The original meaning does not change
+   - The sentence structure and emphasis remain recognizable
+3. Do NOT sacrifice meaning accuracy or source intent just to sound cooler or edgier.
+</translation_philosophy>
+```
+
+Add an explicit “no restructuring unless necessary” rule:
+
+```text
+<structural_rules>
+- Preserve the original order of ideas and key terms wherever possible.
+- Avoid flipping word order or clause order just for style.
+- Only restructure if the original order would sound clearly unnatural or incorrect in the target language.
+</structural_rules>
+```
+
+Reinforce this in `<critical_rules>`:
+
+```text
+6. Do NOT invent new slogans or significantly rephrase short key phrases (titles, headlines, buttons). Keep them as close as possible to the source in meaning and structure, within character limits.
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model:
+- Restructured the headline instead of preserving the core meaning and emphasis. It turned “[casino] without [BS]” into “[no BS] [casino]”, changing word order and rhythm.
+- Over-optimized for edginess/slang (“BS” as an English loan) instead of staying close to the source’s conceptual structure.
+- Did not treat the provided “Expected” text as the authoritative target within the character limit; it treated it as just another example.
+- Focused only on character limits and brand tone, but lacked explicit instructions to:
+  - Preserve the logical structure and emphasis of the original.
+  - Avoid unnecessary rephrasing when a direct, concise equivalent exists.
+  - Prefer clear, locally natural wording over imported English buzzwords if both fit the character limit.
+
+PROMPT MODIFICATIONS:
+
+Add this section under `<task>` or as a new block `<style_guidelines>`:
+
+<style_guidelines>
+STRUCTURE & MEANING:
+- Preserve the original message structure and emphasis wherever possible.
+- Do NOT reorder core concepts (e.g. "X without Y" must stay conceptually "X without Y", not "no Y X").
+- Avoid creative rewrites if a direct, natural translation fits the character limit.
+
+WORD CHOICE:
+- Prioritize clear, natural expressions in the target language over imported English buzzwords, as long as tone and attitude are preserved.
+- Only use English slang or abbreviations (like "BS") if they are clearly more natural and widely understood than the local equivalent for the 25–42 target group.
+
+CONCISENESS VS. CREATIVITY:
+- First aim for a direct, faithful translation that matches the original intent and structure.
+- Only become more creative if:
+  1) The direct translation does NOT fit the character limit, OR
+  2) The direct translation would sound unnaturally stiff or corporate.
+- When you must shorten for character limits, remove or compress words but keep:
+  1) The same core claim,
+  2) The same attitude (anti‑BS, rebellious),
+  3) The same focus (what is being promised and what is being rejected).
+
+CONSISTENCY:
+- If the source emphasizes "no tricks / no BS / no nonsense", keep that as an explicit "without X" idea, not just a vague "honest" or "fair".
+- Keep key nouns (like the product type: casino, game, bonus, etc.) visible and prominent when they are prominent in the source.
+</style_guidelines>
+
+Optionally, reinforce in `<critical_rules>`:
+
+- Do NOT change the logical order of main concepts (e.g. subject, key claim, "without X" part) unless required by grammar in the target language.
+- Avoid adding or dropping emphasis words like "no", "only", "without", "never" unless absolutely necessary for grammar.
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The issue isn’t about length (the headline is within the 20-char limit) or tone, but about semantic fidelity and consistency with the intended brand concept.
+
+Patterns in what went wrong:
+- The model prioritized a *different* colloquial phrase that fits the brand tone but changes the core meaning/nuance of the original (i.e., it chose a synonym that shifts the message).
+- The prompt strongly emphasizes “rebellious”, “local slang”, and “anti-BS attitude” but does not equally emphasize:
+  - Staying close to the source meaning when a specific concept is implied (e.g., “no nonsense”, “no BS”).
+  - Avoiding creative rewrites that alter the underlying metaphor or concept.
+- There is no explicit instruction on:
+  - Preferring direct equivalents of key concepts over alternative slang that might be “cooler” but semantically different.
+  - How to resolve conflicts between tone/slang and semantic accuracy (the model currently over-optimizes for tone).
+
+In short: the model is over-indexing on edgy/local slang and under-indexing on preserving the intended concept and structure of the original.
+
+PROMPT MODIFICATIONS:
+
+Add this block under `<translation_philosophy>` or as a new section right after it:
+
+```text
+<semantic_fidelity>
+Priority order:
+1. Preserve the core meaning and intent of the source text
+2. Then match the brand tone (rebellious, anti-BS)
+3. Then optimize for natural, local-sounding phrasing
+
+Guidelines:
+- Do NOT change the underlying concept or metaphor of key phrases just to sound cooler or more local.
+- When several colloquial options exist, choose the one that:
+  - Best matches the original meaning
+  - Is widely understood by the target age group
+  - Does NOT introduce a different nuance or idea
+- Avoid creative rewrites that:
+  - Replace the core idea with a different one
+  - Add or remove implied promises or claims
+- If there is a tension between:
+  - Staying close to the original meaning, and
+  - Using a more playful/edgy slang
+  → ALWAYS choose the option that keeps the original meaning clearer, as long as it still feels natural and informal.
+</semantic_fidelity>
+```
+
+Add a short clarification to the `<task>` section to constrain creativity:
+
+```text
+- Your job is localization, not copywriting: adapt tone and slang, but do NOT invent new slogans or change the message.
+- Keep the structure and core idea of each line as close to the source as possible while sounding natural in ${targetLanguage}.
+```
+
+Add a brief check step to reinforce this behavior:
+
+```text
+<self_check>
+Before finalizing each translation, quickly verify:
+- Does this line express the SAME idea as the source (no added or removed claims)?
+- Is the tone informal and aligned with the brand, without drifting into a different concept?
+If not, adjust wording while keeping within the character limits.
+</self_check>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model respected character limits and tone but failed on nuance: it chose a similar, informal phrase that fit the brand voice and length, instead of matching the intended idiom/meaning closely enough. In other words:
+- It optimized for “cool slang” and brevity over semantic precision.
+- It treated the source as a loose creative brief rather than a message whose core concept must be preserved.
+- There is no explicit instruction to:
+  - Prefer meaning-faithful idioms over “nearby” slang.
+  - Avoid substituting with similar-sounding or loosely-related expressions when the original has a clear, specific intent.
+  - Resolve conflicts between “rebellious tone” and “semantic fidelity” in favor of fidelity.
+
+PROMPT MODIFICATIONS:
+
+Add a new section to clarify fidelity vs. style:
+
+```xml
+<fidelity_priority>
+Your FIRST priority is to preserve the original meaning and intent of each string.
+Style (rebellious, edgy, slangy) is SECONDARY to meaning.
+
+DO NOT:
+- Replace a clear concept with a different one just because it sounds cooler or more local.
+- Use a different idiom or expression if it changes the nuance or introduces a new idea.
+
+You MAY:
+- Adjust word order, grammar, and light idiomatic phrasing to sound natural and local,
+BUT ONLY if the core meaning and attitude stay the same.
+
+If you must choose between:
+- A perfectly on-brand but semantically different phrase, and
+- A slightly more neutral phrase that preserves the exact meaning,
+
+ALWAYS choose the option that preserves the exact meaning.
+</fidelity_priority>
+```
+
+Tighten the brand positioning section to avoid over-creative rewrites:
+
+```xml
+<brand_positioning>
+Cashy.com is ANTI-corporate casino. We're the rebellious alternative.
+
+Target: 25-42 year olds who are:
+- Skeptical of traditional casino marketing
+- Tired of fine print and tricks
+- Want straight talk, not corporate BS
+
+Brand attitude: Direct, confident, slightly edgy - but never vulgar or alienating.
+
+IMPORTANT:
+- "Rebellious" DOES NOT mean inventing new slogans or changing the core message.
+- Keep the same idea as the source text; only adjust tone and phrasing so it feels natural and rebellious in the target language.
+- Avoid swapping in different colloquial expressions that change the nuance or suggest a different kind of promise or benefit.
+</brand_positioning>
+```
+
+Add explicit guidance for short UI texts / headlines:
+
+```xml
+<short_copy_rules>
+For very short texts (headlines, buttons, labels, taglines):
+
+1. Preserve the core concept and nuance of the source.
+2. Do NOT:
+   - Replace with a different metaphor, joke, or wordplay.
+   - Choose a similar-sounding or loosely-related slang term that changes the idea.
+3. If multiple translations fit within the character limit:
+   - Prefer the one that is closest in meaning and tone to the original,
+   - Even if another option feels slightly more playful.
+
+When in doubt, be more literal rather than inventing a new twist.
+</short_copy_rules>
+```
+
+Reinforce behavior around character limits to avoid meaning drift:
+
+```xml
+<character_limits>
+🚨 ABSOLUTE HARD LIMITS (count includes spaces):
+- hero_headline: MAX 20 characters
+- hero_subheadline: MAX 24 characters
+
+These are HARD CONSTRAINTS that CANNOT be exceeded for UI layout reasons.
+
+MANDATORY: After writing your translation, COUNT the characters:
+- If hero_headline > 20 characters → YOU MUST shorten it
+- If hero_subheadline > 24 characters → YOU MUST shorten it
+
+When shortening:
+- FIRST try to remove filler words or restructure while keeping the SAME meaning.
+- ONLY if absolutely necessary, slightly simplify the message,
+  but NEVER change the core promise, attitude, or metaphor of the original.
+</character_limits>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model respected character limits and tone but optimized for a “cooler”/more idiomatic phrase instead of matching the intended core concept. It treated the task as free localization rather than constrained creative translation.
+
+Pattern issues:
+- The prompt over-emphasizes “edgy, slangy, rebellious” and under-specifies that the core meaning and structure of the source must be preserved when space is tight.
+- There is no explicit instruction that, when multiple slang options exist, the model must choose the one that stays closest to the literal meaning and avoids adding or changing nuances (e.g., “no fuss” vs. “no BS” vs. “no drama”).
+- The prompt doesn’t explicitly say: “Do NOT invent alternative slogans or rephrase the core concept if a direct, concise equivalent exists within the character limit.”
+- There is no guidance to avoid “creative reinterpretation” of short, headline-level strings where small wording shifts significantly change the message.
+
+PROMPT MODIFICATIONS:
+
+Add this under `<task>` or as a separate section:
+
+```text
+<meaning_preservation>
+For all strings, especially short headlines and slogans:
+- Preserve the core meaning and intent of the source text with HIGH fidelity.
+- Do NOT change the message, angle, or promise of the original.
+- When multiple colloquial options are possible, prefer the option that:
+  1) Is closest in meaning to the source
+  2) Fits within the character limit
+  3) Matches the brand tone
+- Do NOT invent new slogans, metaphors, or angles if a direct, concise equivalent exists.
+</meaning_preservation>
+```
+
+Strengthen the character limit section to constrain creativity:
+
+```text
+<character_limits>
+🚨 ABSOLUTE HARD LIMITS (count includes spaces):
+- hero_headline: MAX 20 characters
+- hero_subheadline: MAX 24 characters
+
+These are HARD CONSTRAINTS that CANNOT be exceeded for UI layout reasons.
+
+When working within these limits:
+- FIRST, preserve the original meaning as closely as possible.
+- THEN, adjust wording only as much as needed to:
+  1) Fit the character limit
+  2) Match the brand tone
+- Do NOT change the underlying concept or promise just to sound “cooler” or more creative.
+
+MANDATORY: After writing your translation, COUNT the characters:
+- If hero_headline > 20 characters → YOU MUST shorten it without changing the core meaning
+- If hero_subheadline > 24 characters → YOU MUST shorten it without changing the core meaning
+</character_limits>
+```
+
+Clarify the brand positioning to avoid over-localizing headlines:
+
+```text
+<brand_positioning>
+Cashy.com is ANTI-corporate casino. We're the rebellious alternative.
+
+Target: 25-42 year olds who are:
+- Skeptical of traditional casino marketing
+- Tired of fine print and tricks
+- Want straight talk, not corporate BS
+
+Brand attitude: Direct, confident, slightly edgy - but never vulgar or alienating.
+
+IMPORTANT:
+- “Rebellious” does NOT mean changing the original message.
+- Keep the same promise and structure as the source; express it in a direct, natural way for the target language.
+- Avoid adding extra nuance (e.g., drama, excuses, gossip) that is not present in the source.
+</brand_positioning>
+```
+
+Add a short constraint on creative freedom:
+
+```text
+<creative_constraints>
+- This is controlled localization, not free copywriting.
+- Do NOT reinterpret, embellish, or soften the original.
+- Only use creativity to:
+  1) Stay within character limits
+  2) Preserve meaning
+  3) Match tone
+In case of doubt between a more literal option and a more creative one, choose the MORE LITERAL option that still sounds natural.
+</creative_constraints>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The issue isn’t character count or tone; it’s semantic drift from the intended idiom/meaning. The model chose a similar-sounding, informal phrase that fits the edgy tone (“sin rollos”) but doesn’t match the expected wording (“sin rodeos”). This reveals two patterns:
+
+1. **Over-optimization for style vs. fidelity**  
+   The prompt heavily emphasizes brand attitude, slang, and rebellious tone, but doesn’t clearly state that certain short, idiomatic key phrases must stay very close to the source meaning and to the provided expectations (when they exist). The model feels free to swap one colloquialism for another as long as tone and length fit.
+
+2. **No explicit instruction about “near-synonym” risk**  
+   There is no rule telling the model to avoid replacing a direct, clear idiom with a different idiom that changes nuance, especially in short, high-visibility UI elements (like hero headlines). For these, the model should prioritize semantic precision and directness over creative variation.
+
+PROMPT MODIFICATIONS:
+
+Add a new section to tighten constraints on short, critical strings and avoid creative paraphrasing:
+
+```xml
+<high_visibility_copy_rules>
+For very short, high-visibility strings (e.g. hero headlines, short taglines, buttons):
+1. PRIORITIZE meaning and clarity over creative rephrasing.
+2. Do NOT replace a clear, direct expression with a different idiom or slang that changes nuance, even slightly.
+3. Avoid "near-synonym" swaps just to sound cooler or more local. If multiple colloquial options exist, choose the one that:
+   - stays closest to the original meaning, AND
+   - is widely understood, AND
+   - fits the character limit.
+4. Only use creative slang if it clearly preserves the original intent and attitude without introducing a different shade of meaning.
+</high_visibility_copy_rules>
+```
+
+Strengthen the translation philosophy to de-emphasize unnecessary creativity on key phrases:
+
+```xml
+<translation_philosophy>
+Core principle: REBELLIOUS but ACCESSIBLE
+
+This means:
+1. Prioritize local slang that conveys "anti-BS" attitude.
+2. Slang must be widely understood by the 25–42 demographic.
+3. If slang is too regional or generational, use a clear, direct alternative.
+4. Do NOT sacrifice semantic accuracy for style: the translated text must keep the same core meaning and promise as the original.
+5. For short key phrases (headlines, tags, CTAs), keep structure and meaning as tight and direct as possible. Avoid unnecessary rewording when a straightforward, natural translation exists.
+</translation_philosophy>
+```
+
+Add an explicit check against unnecessary idiom changes:
+
+```xml
+<quality_checks>
+Before finalizing each translation, mentally verify:
+1. Does it keep the same promise and attitude as the source?
+2. For short strings, did I avoid swapping in a different idiom or expression when a direct, natural equivalent exists?
+3. Did I respect all character limits and constraints?
+If any answer is "no", adjust the translation while staying within the limits.
+</quality_checks>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The model respected:
+- JSON format
+- Character limits
+- Informal tone
+- Brand attitude
+
+The failure is semantic: it chose a different colloquial expression than the expected one. This reveals two issues:
+
+1. **Lack of “fidelity vs creativity” hierarchy for short, critical UI strings**  
+   For key elements like hero headlines, the model is optimizing for style/attitude and naturalness, not for *maximal semantic closeness* to the source (or to a predefined concept). It feels free to swap one colloquial phrase for another with similar vibe, even if the nuance changes.
+
+2. **No explicit instruction to avoid “creative synonym swapping” in constrained slots**  
+   In very short strings with hard character limits, the model is using creative paraphrasing instead of staying as close as possible to the core meaning and structure. This increases the chance of drifting away from the intended phrase.
+
+PROMPT MODIFICATIONS:
+
+Add a new section clarifying fidelity vs creativity, especially for short UI strings:
+
+```xml
+<translation_fidelity>
+For ALL translations:
+- Preserve the original meaning as closely as possible.
+- Do NOT replace a clear, direct phrase with a different idiom or slang that changes the nuance, even slightly.
+- When multiple colloquial options exist, prefer the one that is semantically closest to the source, not just "cooler" or more creative.
+
+For VERY SHORT, HIGH-VISIBILITY STRINGS (e.g. headlines, buttons, CTAs, labels):
+- PRIORITIZE meaning fidelity and structure over creative rephrasing.
+- Avoid synonym swapping if it changes the tone, emphasis, or literal idea.
+- Stay as close as possible to the original concept while respecting character limits.
+</translation_fidelity>
+```
+
+Tighten guidance for character-limited UI elements:
+
+```xml
+<ui_strings_policy>
+For any string with a character limit (e.g. hero_headline, hero_subheadline, buttons, CTAs):
+1. First, aim for a direct, faithful translation of the original idea.
+2. Only adjust wording to:
+   - Fit within the character limit, AND
+   - Maintain the same core meaning and attitude.
+3. Do NOT:
+   - Introduce new metaphors or idioms that are not present in the source.
+   - Swap in a different colloquial expression just because it sounds edgy.
+4. If you must shorten:
+   - Remove non-essential words.
+   - Simplify structure.
+   - Keep the key concept and tone intact.
+</ui_strings_policy>
+```
+
+Clarify the “rebellious but accessible” section to limit over-creative slang substitutions:
+
+```xml
+<brand_positioning_refinement>
+The brand can be rebellious, but:
+- Do NOT sacrifice semantic accuracy for edginess.
+- Do NOT replace a straightforward, anti-BS message with a different slang phrase that shifts the meaning.
+- Edgy tone should come from word choice and rhythm, NOT from changing the underlying idea.
+</brand_positioning_refinement>
+```
+
+Add an explicit check step for critical strings:
+
+```xml
+<quality_check>
+After translating each character-limited, high-visibility string (headlines, subheadlines, CTAs):
+1. Confirm it is within the character limit.
+2. Ask yourself: "Does this express the SAME idea and attitude as the source, without adding or changing meaning?"
+3. If the answer is not clearly YES, revise to be closer to the original meaning.
+</quality_check>
+```
+</automated_optimization_guidance>
+
+
+<automated_optimization_guidance>
+ADDITIONAL GUIDANCE FROM OPTIMIZATION (Iteration-specific):
+ANALYSIS:
+The issue isn’t character limits or tone; it’s semantic/idiomatic drift from the intended meaning. The model chose a similar‑feeling colloquial phrase (“sin rollos”) instead of preserving the specific concept (“sin rodeos” = straightforward, no‑nonsense). This reveals two patterns:
+
+1. **Over‑creative paraphrasing of key brand concepts**  
+   The model is optimizing for “edgy slang” and naturalness, and feels free to substitute near‑synonyms or different idioms that fit the vibe, even when the source is already a strong, concise phrase that encodes a core brand promise (“no BS”, “no tricks”, “straightforward”).
+
+2. **No explicit instruction to preserve core semantic intent for short, high‑impact UI strings**  
+   For short hero lines with hard character limits, even small semantic shifts (e.g., changing the nuance of “no BS” vs “no fuss”) are unacceptable, but the prompt doesn’t clearly say “do not change the underlying concept” when the source is already punchy and on‑brand.
+
+PROMPT MODIFICATIONS:
+
+Add a new section clarifying semantic fidelity for key lines:
+
+```text
+<semantic_fidelity>
+For short, high-impact UI strings (like hero_headline and hero_subheadline):
+
+- Preserve the CORE MEANING and concept exactly.
+- Do NOT replace a clear, punchy concept with a different idiom or metaphor, even if it feels similar.
+- If the source text already expresses the brand attitude (rebellious, no-BS, straightforward), keep that same idea in the translation. Do not soften, exaggerate, or change it.
+- Prioritize semantic accuracy over creative rephrasing for these key lines.
+</semantic_fidelity>
+```
+
+Tighten the brand positioning section to limit over-creative slang swaps:
+
+```text
+<brand_positioning>
+Cashy.com is ANTI-corporate casino. We're the rebellious alternative.
+
+Target: 25-42 year olds who are:
+- Skeptical of traditional casino marketing
+- Tired of fine print and tricks
+- Want straight talk, not corporate BS
+
+Brand attitude: Direct, confident, slightly edgy - but never vulgar or alienating.
+
+Translation implication:
+- Your translations should feel like they were written by a local rebel who's fed up with traditional casinos, not by a corporate marketing team.
+- HOWEVER: Do NOT change the underlying promise or concept. If the source says "no tricks / no BS / straightforward", the translation MUST keep that same idea, not a different one (no fuss, no drama, etc.).
+- Use natural, widely understood wording, but avoid swapping in a different metaphor or slang expression that alters the nuance of the message.
+</brand_positioning>
+```
+
+Clarify behavior under character limits to avoid meaning shifts:
+
+```text
+<character_limits>
+🚨 ABSOLUTE HARD LIMITS (count includes spaces):
+- hero_headline: MAX 20 characters
+- hero_subheadline: MAX 24 characters
+
+These are HARD CONSTRAINTS that CANNOT be exceeded for UI layout reasons.
+
+When shortening to meet character limits:
+- FIRST try to keep the same key words and concept.
+- ONLY remove or adjust minor words (articles, fillers) that do NOT change the core meaning.
+- Do NOT replace the main idea with a different expression just to fit the limit.
+
+MANDATORY: After writing your translation, COUNT the characters:
+- If hero_headline > 20 characters → YOU MUST shorten it WITHOUT changing the core meaning.
+- If hero_subheadline > 24 characters → YOU MUST shorten it WITHOUT changing the core meaning.
+
+Exceeding these limits or changing the underlying concept breaks the production UI. NO EXCEPTIONS.
+</character_limits>
+```
+
+Reinforce in the task section that “edgy” doesn’t mean “different concept”:
+
+```text
+<task>
+Translate the JSON string values from English to ${targetLanguage}.
+Preserve all keys, placeholders {like_this}, and HTML tags <like_this> exactly.
+Output ONLY valid JSON - no explanations, no markdown, no extra text.
+
+Be edgy and natural, but:
+- Do NOT introduce new metaphors or idioms that change the original idea.
+- For taglines, headlines, and other short strings, keep the same promise and attitude as the source.
+</task>
+```
+</automated_optimization_guidance>
 <final_instruction>
 Remember: Your goal is to make ${targetLanguage}-speaking casino players say "Finally, a casino that talks like a real person."
 
