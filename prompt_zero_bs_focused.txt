@@ -36,8 +36,45 @@ NEVER VIOLATE:
 Violations break production.
 </critical_rules>
 
-<translation_approach>
-STEP 1 - FIND THE RIGHT CONCEPT (for hero_headline):
+<translation_strategy_by_content_type>
+CRITICAL: Not everything gets the rebellious "Zero BS" treatment. Different content needs different approaches:
+
+🎯 REBELLIOUS TONE (hero_headline, hero_subheadline, marketing copy):
+- Use local slang and edgy expressions
+- Apply the "Zero BS" brand voice
+- Be punchy and provocative
+- Examples: hero_headline, hero_subheadline, hero_bullet_*, tagline, promo_*
+
+📱 STANDARD CLEAR TONE (UI elements, buttons, forms, navigation):
+- Use conventional, standard terms
+- Be ultra-clear and concise
+- NO creativity, NO slang, NO attitude
+- Follow platform conventions
+- Examples: button_*, nav_*, form_*, label_*, input_*, error_*, placeholder_*
+
+📋 INFORMATIVE TONE (descriptions, help text, FAQs):
+- Clear and helpful
+- Casual but not rebellious
+- Focus on clarity
+- Examples: game_description_*, help_*, faq_*, info_*
+
+⚖️ FORMAL TONE (legal, compliance, responsible gaming):
+- Formal and precise
+- Use proper legal terminology
+- Serious tone, NO jokes
+- Examples: terms_*, legal_*, privacy_*, responsible_gaming_*
+
+WHEN IN DOUBT: Look at the key name:
+- If it contains "hero" or "headline" → Rebellious
+- If it contains "button", "nav", "form", "input" → Standard clear
+- If it contains "description", "help", "info" → Informative
+- If it contains "terms", "legal", "privacy" → Formal
+</translation_strategy_by_content_type>
+
+<translation_approach_for_hero_content>
+ONLY FOR hero_headline, hero_subheadline, and similar marketing content:
+
+STEP 1 - FIND THE RIGHT CONCEPT:
 
 Think about what young adults in ${targetLanguage} say when they call out corporate BS. Not formal words, but ACTUAL expressions:
 • When someone is full of hot air / all talk no action
@@ -71,9 +108,11 @@ hero_subheadline: 24 characters maximum (strict)
 After translating, COUNT the characters:
 - If hero_headline > 20 chars → YOU MUST shorten it
 - If hero_subheadline > 24 chars → YOU MUST shorten it
-</translation_approach>
+</translation_approach_for_hero_content>
 
-<language_specific_hints>
+<language_specific_hints_for_hero_content>
+NOTE: These hints apply ONLY to hero_headline and hero_subheadline. For UI elements, use standard conventions.
+
 ROMANCE LANGUAGES (Italian, French, Spanish, Portuguese):
 • Look for slang meaning 'fluff', 'hot air', 'empty words', 'beating around the bush'
 • Young people in these cultures often have a punchy 1-2 syllable slang word for BS
@@ -118,7 +157,7 @@ INDONESIAN/MALAY:
 • Look for colloquial slang for nonsense or BS that young people use
 • Format A or B depending on what feels natural
 • Example: Indonesian "tanpa xao" (without BS)
-</language_specific_hints>
+</language_specific_hints_for_hero_content>
 
 <slang_evaluation>
 When choosing slang for "BS/tricks/nonsense":
@@ -187,8 +226,44 @@ Translate to local money word IF:
 Max 24 characters - must count and shorten if needed.
 </subheadline_guidance>
 
+<ui_element_translations>
+For buttons, forms, navigation, and standard UI elements:
+
+CRITICAL: Use STANDARD, CONVENTIONAL translations. NO creativity, NO slang, NO attitude.
+
+EXAMPLES OF CORRECT UI TRANSLATIONS:
+
+Buttons:
+- "Sign Up" → Use standard term (e.g., German "Registrieren", French "S'inscrire")
+- "Login" → Use standard term (e.g., Spanish "Iniciar sesión", Italian "Accedi")
+- "Play Now" → Clear and direct (e.g., German "Jetzt spielen", French "Jouer maintenant")
+- "Deposit" → Financial term (e.g., Spanish "Depositar", Italian "Deposita")
+
+Navigation:
+- "Games" → Standard word (e.g., German "Spiele", French "Jeux")
+- "Account" → Standard word (e.g., Spanish "Cuenta", Italian "Account")
+- "Help" → Standard word (e.g., German "Hilfe", French "Aide")
+
+Forms:
+- "Email" → Keep as "Email" or use local equivalent
+- "Password" → Standard term (e.g., German "Passwort", French "Mot de passe")
+- "Confirm" → Standard term (e.g., Spanish "Confirmar", Italian "Conferma")
+
+WRONG EXAMPLES (DO NOT DO THIS):
+- "Sign Up" → ✗ "Join the rebellion" (too creative)
+- "Login" → ✗ "Get in here" (too casual)
+- "Games" → ✗ "The good stuff" (too creative)
+
+RULES FOR UI ELEMENTS:
+1. Use the most common, widely-understood term
+2. Keep it concise (1-2 words max)
+3. Follow platform/industry conventions
+4. Think: "What does every other app call this?"
+5. NO slang, NO creativity, NO brand voice
+</ui_element_translations>
+
 <capitalization>
-For hero_headline and hero_subheadline:
+For hero_headline and hero_subheadline ONLY:
 
 DEFAULT: ALL UPPERCASE
 - Most Latin-script languages should use all caps
