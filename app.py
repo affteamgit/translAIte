@@ -479,14 +479,16 @@ def main():
                             "valid": result_valid,
                             "parsed": result_parsed,
                             "error": result_error,
-                            "raw": result
+                            "raw": result,
+                            "prompt": formatted_prompt
                         }
                     else:
                         all_results[language] = {
                             "valid": False,
                             "parsed": None,
                             "error": "Translation failed",
-                            "raw": None
+                            "raw": None,
+                            "prompt": formatted_prompt
                         }
 
             # Add copy button for all results
@@ -515,6 +517,14 @@ def main():
 
                         # Show formatted JSON
                         st.code(json.dumps(result_parsed, indent=2, ensure_ascii=False), language="json")
+
+                        # Debug information
+                        with st.expander("🔧 Debug Information", expanded=False):
+                            st.markdown("**Formatted Prompt Sent to API:**")
+                            st.code(result_data.get("prompt", "N/A"), language="text")
+
+                            st.markdown("**Raw API Response:**")
+                            st.code(result_data.get("raw", "N/A"), language="text")
 
                         # Validation checks
                         st.subheader("🔍 Validation Checks")
@@ -591,6 +601,11 @@ def main():
                         st.error(f"⚠️ Invalid JSON output")
                         st.code(result_data.get("raw", ""), language="text")
                         st.error(result_data.get("error", "Unknown error"))
+
+                        # Debug information for failed translations
+                        with st.expander("🔧 Debug Information", expanded=False):
+                            st.markdown("**Formatted Prompt Sent to API:**")
+                            st.code(result_data.get("prompt", "N/A"), language="text")
 
         else:
             st.info("👈 Select languages, configure settings, and click 'Translate' to see results")
