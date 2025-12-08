@@ -339,8 +339,6 @@ Now translate:
 
 <input>
 Target language: ${targetLanguage}
-Context: ${contextPath}
-Glossary: ${glossary}
 
 JSON to translate:
 ${jsonInput}

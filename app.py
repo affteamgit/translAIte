@@ -124,18 +124,10 @@ def load_prompt_template() -> str:
 def format_prompt(
     template: str,
     target_language: str,
-    region_variant: str,
-    context_path: str,
-    glossary: Dict[str, str],
     json_input: str
 ) -> str:
     """Format the prompt template with user inputs"""
-    glossary_str = json.dumps(glossary) if glossary else "{}"
-
     return template.replace("${targetLanguage}", target_language) \
-                   .replace("${regionVariant}", region_variant) \
-                   .replace("${contextPath}", context_path) \
-                   .replace("${glossary}", glossary_str) \
                    .replace("${jsonInput}", json_input)
 
 def translate_with_opus(prompt: str, temperature: float = 0.3) -> Optional[str]:
@@ -389,12 +381,12 @@ def main():
         # Prompt editor
         st.subheader("Translation Prompt")
         with st.expander("✏️ Edit Prompt Template", expanded=False):
-            st.markdown("**Variables:** `${targetLanguage}`, `${regionVariant}`, `${contextPath}`, `${glossary}`, `${jsonInput}`")
+            st.markdown("**Variables:** `${targetLanguage}`, `${jsonInput}`")
             prompt_template = st.text_area(
                 "Prompt Template",
                 value=default_prompt,
                 height=400,
-                help="Edit the prompt template. Use variables like ${targetLanguage}, ${jsonInput}, etc.",
+                help="Edit the prompt template. Variables: ${targetLanguage} and ${jsonInput}",
                 label_visibility="collapsed"
             )
 
@@ -467,9 +459,6 @@ def main():
                     formatted_prompt = format_prompt(
                         template=prompt_template,
                         target_language=language,
-                        region_variant=language,
-                        context_path="translation",
-                        glossary={},
                         json_input=json_input
                     )
 
