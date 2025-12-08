@@ -30,3 +30,8 @@ COMPARISON_RESULTS.md
 OPTIMIZATION_SUMMARY.md
 prompt.txt
 prompt_optimized.txt
+
+# Local optimization scripts and results (never push)
+optimize_prompt.py
+OPTIMIZATION_README.md
+optimization_results/
