@@ -80,52 +80,74 @@ If the source says "CASH" → translate it directly as cash/money
 If the source says "ZERO BS" → translate the no-tricks concept without adding "real" or "genuine"
 </translation_philosophy>
 
-<capitalization_guidelines>
+<script_and_capitalization>
+SCRIPT RULES (CRITICAL):
+- ALWAYS use your language's native script
+- If your language has its own writing system (Arabic, Hindi, Thai, etc.) → USE IT
+- NEVER mix scripts (e.g., don't write Hindi in Latin letters)
+- Only use Latin script if your language natively uses it
+
+CAPITALIZATION RULES:
 For hero_headline and hero_subheadline:
 
 DEFAULT STYLE: ALL UPPERCASE
-- Most languages should use all caps for both headline and subheadline
+- Most Latin-script languages should use all caps for both headline and subheadline
 - This creates visual consistency and impact
 - Use your language's standard uppercase conventions
 
 WHEN ALL CAPS DOESN'T WORK:
-- Languages without case distinction (Chinese, Japanese, etc.) → use standard form
-- Languages where all caps is unnatural → use standard title case
+- Languages without case distinction (Chinese, Japanese, Arabic, Hindi, etc.) → use standard form
+- Languages where all caps is unnatural → use standard title case or sentence case
+
+MIXED CASE GUIDELINES:
+- If using mixed case (especially for subheadline), be consistent
+- Don't randomly capitalize some words but not others
+- Follow your language's standard title case rules
+- Compound words may need hyphens (check your language's conventions)
 
 CONSISTENCY:
-- If your translation mixes uppercase and lowercase, ensure it's intentional and standard in your language
-- Don't randomly capitalize some words but not others
-</capitalization_guidelines>
+- Hero_headline and hero_subheadline should match in style (both all caps, or both mixed case)
+</script_and_capitalization>
 
 <headline_translation_strategy>
-For hero_headline specifically, you must decide between TWO approaches:
+For hero_headline specifically, you must decide between THREE approaches:
 
-APPROACH A: Authentic Local Slang
-Use if you can find slang that is:
-- Widely understood by 25-42 age group
-- Clearly conveys "no tricks/BS/nonsense"
-- Edgy but not offensive
-- Fits character limit (20 chars)
+APPROACH A: "Zero Tricks/BS" Angle
+Use slang or direct language that means:
+- "No tricks", "No gimmicks", "No runarounds", "No complications"
+- "Zero BS", "Zero nonsense", "Zero fluff"
 
-Red flags that slang is WRONG:
-- Too vulgar (would offend mainstream users)
-- Too regional (only works in one city/region)
-- Too youth-specific (35-42 year olds won't get it)
-- Too obscure (needs explanation)
+Best when:
+- You have strong slang for tricks/gimmicks/schemes
+- The "anti-tricks" message is culturally relevant
+- Fits character limit
 
-APPROACH B: Clear Direct Language
-Use if local slang options are weak or don't fit. Use straightforward translation of:
-- "without tricks"
-- "no nonsense"
-- "straight talk"
-- "zero BS"
+APPROACH B: "Straight Talk" Angle
+Use idioms or phrases meaning:
+- "Straight to the point", "No beating around bush", "Direct", "Honest talk"
+- Implies we don't complicate things or hide information
 
-When to choose B over A:
-- Available slang is too vulgar, regional, or obscure
-- Direct language is punchier given character limit
-- The brand's rebellious attitude shows through clarity + your tone across the whole site
+Best when:
+- Your language has a strong idiom for directness
+- "Straight talk" resonates more than "no tricks" in your culture
+- Fits character limit
 
-Both approaches work. Choose based on which hits harder in ${targetLanguage}.
+APPROACH C: "Transparent/Clear" Angle
+Use words meaning:
+- "Transparent", "Clear", "Open", "Straightforward"
+- Focuses on clarity and honesty rather than calling out tricks
+
+Best when:
+- Negative framing ("no tricks") feels too aggressive in your culture
+- Positive framing ("transparent") is more appealing
+- Your language prefers positive statements
+
+SELECTION PRIORITY:
+1st: Try A or B with authentic slang/idioms (most rebellious)
+2nd: Try clear direct language version of A or B
+3rd: Fall back to C if A and B don't work culturally
+
+All three approaches work - choose what resonates best in ${targetLanguage}.
 </headline_translation_strategy>
 
 <slang_evaluation_framework>
@@ -143,12 +165,26 @@ When evaluating slang for "BS/tricks/nonsense", ask:
    - Would someone's older brother/sister (35+) understand it?
    - Critical: Is it TOO youth-specific? (under-30s only = too narrow)
 
-3. MEANING PRECISION
-   - Does it specifically mean "tricks/scams/BS/nonsense/fake promises/gimmicks"?
-   - Or is it too generic (like "bad" or "problems" or just "lies" or "talk")?
-   - Best: words for TRICKS, GIMMICKS, DECEPTION, SCHEMES, or idiomatic expressions meaning "no beating around bush"
-   - Avoid: words that just mean "lies" or "dishonesty" without the tricks/schemes connotation
-   - Avoid: words that just mean "talk" or "words" without the BS/nonsense connotation
+3. MEANING PRECISION - CRITICAL
+
+   What "BS/tricks/nonsense" ACTUALLY means in this context:
+   - Complicated processes and hidden terms (not straightforward)
+   - Marketing gimmicks and fake promises
+   - Beating around the bush instead of direct communication
+
+   Your slang MUST convey one of these meanings:
+   ✓ BEST: "Tricks", "gimmicks", "schemes", "complications", "runarounds"
+   ✓ GOOD: Idioms meaning "straight talk" / "no beating around bush" / "direct"
+   ✓ ACCEPTABLE: "Nonsense", "BS", "fluff" if they imply unnecessary complications
+
+   WRONG choices:
+   ✗ Words meaning just "lies" or "deception" (too generic, missing the complexity angle)
+   ✗ Words meaning just "cheating" or "fraud" (too criminal, not our brand)
+   ✗ Words meaning just "talk" or "words" (too vague)
+
+   Test your choice: Does it specifically mean "unnecessary complications, gimmicks, or indirect communication"?
+   - If YES → good choice
+   - If it just means "dishonest" or "bad" → wrong choice
 
 4. TONE CALIBRATION
    - Is it edgy enough to feel rebellious?
@@ -178,14 +214,25 @@ Do NOT force the same word order across languages. Choose the structure that:
 - Maximizes impact
 - Fits character limit (20 chars max!)
 
-PREFERRED STRUCTURE: [BRAND] [PREPOSITION] [SLANG]
-Why: Front-loads the brand, feels more authoritative
-Pattern: Place the casino word first, followed by a preposition meaning "without/zero", then your slang/idiom term
+STRUCTURE DECISION:
 
-ALTERNATIVE: [INTENSITY] [SLANG] [BRAND]
-Use when: Intensity word is short and punchy (like "ZERO" or equivalent)
-Pattern: Start with intensity marker, then slang term, then casino word
-Caution: Only if total stays under 20 chars
+Option A: [INTENSITY] [SLANG] [BRAND]
+Pattern: ZERO/NADA/NULL + slang term + casino word
+When to use:
+- Your language has a short, punchy intensity word (2-5 letters)
+- This structure sounds natural and rebellious in your language
+- Total stays under 20 characters
+Why it works: Leads with attitude, creates immediate impact
+
+Option B: [BRAND] [PREPOSITION] [SLANG]
+Pattern: Casino word + without/no + slang term
+When to use:
+- Option A exceeds character limit or sounds unnatural
+- Your language prefers subject-first structure
+- The preposition + slang combo is particularly idiomatic
+
+DEFAULT PREFERENCE: Try Option A first. It's punchier and more rebellious.
+Only fall back to Option B if Option A doesn't work for your language's grammar or character limit.
 
 AVOID: [BRAND] [VERBOSE PHRASE]
 Long phrases blow the character budget. If your initial translation exceeds 18-20 chars:
@@ -215,15 +262,20 @@ Consider your language's context:
 
 When translating "REWARDS" in hero_subheadline:
 
-Consider which term is most natural in casino contexts:
-- "Prizes" (lottery/competition winnings)
-- "Winnings" (money won from gambling)
-- "Rewards" (incentive/compensation)
+IMPORTANT: In casino context, "CASH REWARDS" means cash prizes/winnings from playing, NOT loyalty rewards or bonuses.
 
-Choose the term that:
-- Feels most natural when talking about casino payouts
-- Isn't overly formal or technical
-- Resonates with how players actually talk
+Choose the best term for your language:
+- "Prizes" → if your language uses this for lottery/competition winnings (most common choice)
+- "Winnings" → if your language uses this specifically for gambling money won
+- "Rewards" → only if "prizes" and "winnings" sound unnatural in your language
+
+Decision criteria:
+- What do players actually call money they win at casinos in your language?
+- Which word is used in casino marketing in your language?
+- Avoid overly formal or technical terms
+- Avoid words that imply loyalty programs or bonuses (we mean actual winnings)
+
+Test: "I won cash [YOUR WORD] at the casino" - does it sound natural?
 </casino_terminology>
 
 <cash_loanword_decision>
