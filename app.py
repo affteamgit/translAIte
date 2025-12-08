@@ -25,14 +25,6 @@ REFERENCE_TRANSLATIONS = {
         "hero_headline": "CASINO OHNE TRICKS",
         "hero_subheadline": "Nur Cash-Gewinne"
     },
-    "Slovenian": {
-        "hero_headline": "KAZINO BREZ TRIKOV",
-        "hero_subheadline": "Samo denarne nagrade"
-    },
-    "Serbian": {
-        "hero_headline": "KAZINO BEZ TRIKOVA",
-        "hero_subheadline": "Samo keš nagrade"
-    },
     "Russian": {
         "hero_headline": "КАЗИНО БЕЗ ФОКУСОВ",
         "hero_subheadline": "Только денежные призы"
@@ -353,7 +345,7 @@ def main():
         # Target language configuration
         st.subheader("Language Settings")
 
-        st.info("📋 Will translate to all 18 reference languages: French, Spanish, Italian, German, Slovenian, Serbian, Russian, Japanese, Indonesian, Simplified Chinese, Traditional Chinese, Korean, Portuguese (Portugal), Portuguese (Brazil), Turkish, Hindi, Vietnamese, Arabic (Peninsular)")
+        st.info("📋 Will translate to all 16 reference languages: French, Spanish, Italian, German, Russian, Japanese, Indonesian, Simplified Chinese, Traditional Chinese, Korean, Portuguese (Portugal), Portuguese (Brazil), Turkish, Hindi, Vietnamese, Arabic (Peninsular)")
 
         # JSON input to translate
         st.subheader("JSON to Translate")
@@ -388,10 +380,10 @@ def main():
         st.header("Translation Results")
 
         if translate_button:
-            # Translate all 18 reference languages
+            # Translate all 16 reference languages
             all_results = {}
 
-            with st.spinner("Translating to all 18 languages..."):
+            with st.spinner("Translating to all 16 languages..."):
                 for language in REFERENCE_TRANSLATIONS.keys():
                     # Format the prompt
                     formatted_prompt = format_prompt(
@@ -524,7 +516,7 @@ def main():
                         st.error(result_data.get("error", "Unknown error"))
 
         else:
-            st.info("👈 Configure settings and click 'Translate' to see results for all 18 languages")
+            st.info("👈 Configure settings and click 'Translate' to see results for all 16 languages")
 
     # Sidebar with information
     with st.sidebar:
